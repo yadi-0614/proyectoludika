@@ -1,0 +1,1321 @@
+﻿<!doctype html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ config('app.name', 'Laravel') }}</title>
+    <link rel="dns-prefetch" href="//fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    @stack('styles')
+
+    <style>
+        /* ===== CUSTOM NAVBAR ===== */
+        .app-navbar {
+            background: linear-gradient(90deg, #0d1f18 0%, #1E6F5C 50%, #0d1f18 100%);
+            padding: 0;
+            border-bottom: 2px solid rgba(105, 181, 120, 0.35);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.35);
+        }
+
+        .app-navbar .container {
+            min-height: 62px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: nowrap;
+            position: relative;
+        }
+
+        .app-navbar__brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.15rem;
+            color: #fff !important;
+            letter-spacing: 0.3px;
+            transition: opacity 0.2s;
+        }
+
+        .app-navbar__brand:hover {
+            opacity: 0.85;
+            color: #fff !important;
+        }
+
+        .app-navbar__brand-icon {
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, #1E6F5C, #2C2C2C);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(30, 111, 92, 0.5);
+            flex-shrink: 0;
+        }
+
+        .app-navbar .nav-link-ghost {
+            color: rgba(255, 255, 255, 0.75) !important;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.4rem 1rem !important;
+            border-radius: 50px;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .app-navbar .nav-link-ghost:hover {
+            background: rgba(255, 255, 255, 0.10);
+            color: #fff !important;
+        }
+
+        .app-navbar .nav-link-register {
+            background: linear-gradient(135deg, #1E6F5C, #2C2C2C);
+            color: #fff !important;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.4rem 1.2rem !important;
+            border-radius: 50px;
+            margin-left: 4px;
+            box-shadow: 0 2px 10px rgba(30, 111, 92, 0.35);
+            transition: opacity 0.2s, transform 0.15s;
+        }
+
+        .app-navbar .nav-link-register:hover {
+            opacity: 0.88;
+            transform: scale(1.03);
+            color: #fff !important;
+        }
+
+        .navbar-cart-btn {
+            background: rgba(255, 255, 255, 0.10);
+            border: 1.5px solid rgba(105, 181, 120, 0.55);
+            border-radius: 50px;
+            padding: 5px 14px 5px 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+            position: relative;
+        }
+
+        .navbar-cart-btn:hover {
+            background: rgba(30, 111, 92, 0.30);
+            border-color: #69B578;
+        }
+
+        .navbar-cart-badge {
+            display: none;
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            min-width: 20px;
+            height: 20px;
+            background: #C9A227;
+            color: #fff;
+            font-size: 0.62rem;
+            font-weight: 700;
+            border-radius: 50px;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            padding: 0 4px;
+            border: 2px solid #0d1f18;
+        }
+
+        .navbar-user-chip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.09);
+            border: 1.5px solid rgba(105, 181, 120, 0.35);
+            border-radius: 50px;
+            padding: 5px 14px 5px 6px;
+            text-decoration: none;
+            color: #fff !important;
+            font-size: 0.88rem;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .navbar-user-chip:hover {
+            background: rgba(255, 255, 255, 0.14);
+            color: #fff !important;
+        }
+
+        .navbar-user-avatar {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #1E6F5C, #2C2C2C);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.78rem;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .app-navbar .dropdown-menu {
+            margin-top: 8px !important;
+            border-radius: 12px;
+            border: 1.5px solid #d6ead8;
+            box-shadow: 0 8px 24px rgba(30, 111, 92, 0.15);
+            overflow: hidden;
+            padding: 6px;
+            min-width: 160px;
+        }
+
+        .app-navbar .dropdown-item {
+            border-radius: 8px;
+            font-size: 0.88rem;
+            padding: 8px 14px;
+            color: #1E6F5C;
+            font-weight: 500;
+            transition: background 0.15s;
+        }
+
+        .app-navbar .dropdown-item:hover {
+            background: #eef6ef;
+            color: #155a49;
+        }
+
+        .app-navbar .navbar-toggler {
+            border-color: rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 0.45rem 0.6rem;
+            background: rgba(0, 0, 0, 0.2);
+            box-shadow: none !important;
+        }
+
+        .app-navbar .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255,255,255,0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        @media (max-width: 767.98px) {
+            .app-navbar .container {
+                padding-top: 8px;
+                padding-bottom: 10px;
+                flex-wrap: wrap;
+            }
+
+            .app-navbar .navbar-collapse {
+                position: absolute;
+                top: calc(100% + 10px);
+                right: 12px;
+                width: min(360px, calc(100vw - 24px));
+                margin-top: 0;
+                padding: 0;
+                border: 0;
+                background: transparent;
+                z-index: 1050;
+            }
+
+            .app-navbar .navbar-nav {
+                width: 100%;
+                align-items: stretch !important;
+                gap: 8px !important;
+            }
+
+            .app-navbar .navbar-nav .nav-item {
+                width: 100%;
+            }
+
+            .app-navbar .nav-link-ghost,
+            .app-navbar .nav-link-register {
+                display: block;
+                width: 100%;
+                text-align: center;
+            }
+
+            .mobile-auth-links {
+                background: #eef2f1;
+                border: 1px solid #d8e6df;
+                border-radius: 16px;
+                overflow: hidden;
+                box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+            }
+
+            .mobile-auth-link {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                width: 100%;
+                padding: 14px 16px;
+                color: #0f6d60;
+                text-decoration: none;
+                font-size: 1.05rem;
+                font-weight: 500;
+            }
+
+            .mobile-auth-link:hover {
+                background: #e2ece8;
+                color: #0b5f54;
+            }
+
+            .mobile-auth-divider {
+                margin: 0;
+                border: 0;
+                border-top: 1px solid #cfded8;
+            }
+
+            .mobile-auth-btn {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                width: 100%;
+                padding: 14px 16px;
+                color: #0f6d60;
+                background: transparent;
+                border: 0;
+                font-size: 1.05rem;
+                font-weight: 500;
+                text-align: left;
+            }
+
+            .mobile-auth-btn:hover {
+                background: #e2ece8;
+                color: #0b5f54;
+            }
+        }
+
+        /* ===== TOAST ===== */
+        #cart-toast {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 10000;
+            background: #fff;
+            border: 1.5px solid #69B578;
+            border-radius: 14px;
+            box-shadow: 0 8px 30px rgba(30, 111, 92, 0.22);
+            padding: 14px 20px;
+            min-width: 255px;
+            max-width: 330px;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.32s ease, transform 0.32s ease;
+            display: none;
+        }
+
+        #cart-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== QUANTITY MODAL ===== */
+        #qty-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(13, 31, 24, 0.55);
+            z-index: 20000;
+            backdrop-filter: blur(3px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        #qty-modal-overlay.open {
+            display: flex;
+        }
+
+        #qty-modal {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(30, 111, 92, 0.28);
+            border: 1.5px solid #69B578;
+            padding: 0;
+            width: 340px;
+            max-width: 94vw;
+            overflow: hidden;
+            animation: qtyModalIn 0.25s cubic-bezier(.34, 1.56, .64, 1) both;
+        }
+
+        @keyframes qtyModalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.85) translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        #qty-modal-header {
+            background: linear-gradient(135deg, #1E6F5C, #2C2C2C);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        #qty-modal-title {
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.97rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #qty-modal-close {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1.4rem;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+            transition: color 0.15s;
+        }
+
+        #qty-modal-close:hover {
+            color: #fff;
+        }
+
+        #qty-modal-body {
+            padding: 22px 22px 20px;
+        }
+
+        #qty-modal-product-name {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #2C2C2C;
+            margin-bottom: 4px;
+            text-align: center;
+        }
+
+        #qty-modal-product-price {
+            font-size: 0.85rem;
+            color: #1E6F5C;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 18px;
+        }
+
+        .qty-label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #1E6F5C;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .qty-stepper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            border: 2px solid #69B578;
+            border-radius: 50px;
+            overflow: hidden;
+            width: fit-content;
+            margin: 0 auto 20px;
+        }
+
+        .qty-stepper button {
+            background: #eef6ef;
+            border: none;
+            width: 42px;
+            height: 42px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1E6F5C;
+            cursor: pointer;
+            transition: background 0.15s;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qty-stepper button:hover {
+            background: #d6ead8;
+        }
+
+        .qty-stepper input {
+            border: none;
+            width: 60px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #2C2C2C;
+            outline: none;
+            padding: 0;
+            background: #fff;
+            -moz-appearance: textfield;
+        }
+
+        .qty-stepper input::-webkit-inner-spin-button,
+        .qty-stepper input::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        #qty-modal-confirm {
+            width: 100%;
+            padding: 11px;
+            background: linear-gradient(135deg, #1E6F5C, #2C2C2C);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            font-size: 0.93rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.15s;
+            box-shadow: 0 4px 14px rgba(30, 111, 92, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        #qty-modal-confirm:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
+        }
+
+        #qty-modal-confirm:disabled {
+            opacity: 0.65;
+            cursor: wait;
+            transform: none;
+        }
+
+        /* ===== SUCCESS PURCHASE MODAL ===== */
+        #purchase-success-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(13, 31, 24, 0.60);
+            z-index: 30000;
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        #purchase-success-overlay.open {
+            display: flex;
+        }
+
+        #purchase-success-modal {
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 24px 80px rgba(30, 111, 92, 0.30);
+            border: 2px solid #69B578;
+            padding: 0;
+            width: 380px;
+            max-width: 94vw;
+            overflow: hidden;
+            text-align: center;
+            animation: successModalIn 0.4s cubic-bezier(.34, 1.56, .64, 1) both;
+        }
+
+        @keyframes successModalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.7) translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        #purchase-success-header {
+            background: linear-gradient(135deg, #1E6F5C, #2C2C2C);
+            padding: 28px 24px 22px;
+            position: relative;
+        }
+
+        .success-check-circle {
+            width: 68px;
+            height: 68px;
+            background: rgba(255, 255, 255, 0.18);
+            border: 3px solid rgba(255, 255, 255, 0.55);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            animation: successCheckPop 0.5s 0.25s cubic-bezier(.34, 1.56, .64, 1) both;
+        }
+
+        @keyframes successCheckPop {
+            from {
+                transform: scale(0.4);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        #purchase-success-header h2 {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin: 0;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        #purchase-success-body {
+            padding: 24px 28px 26px;
+        }
+
+        #purchase-success-msg {
+            font-size: 0.97rem;
+            color: #555;
+            line-height: 1.6;
+            margin: 0 0 22px;
+        }
+
+        #purchase-success-close {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #1E6F5C, #2C2C2C);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(30, 111, 92, 0.35);
+            transition: opacity 0.2s, transform 0.15s;
+        }
+
+        #purchase-success-close:hover {
+            opacity: 0.88;
+            transform: scale(1.02);
+        }
+
+        .success-confetti {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .success-confetti span {
+            position: absolute;
+            top: -10px;
+            border-radius: 2px;
+            animation: confettiFall 1.2s ease-in forwards;
+            opacity: 0;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(100px) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+
+        {{-- ===== NAVBAR ===== --}}
+        <nav class="navbar navbar-expand-md app-navbar">
+            <div class="container">
+                <a class="app-navbar__brand" href="{{ url('/') }}">
+                    <img src="{{ asset('images/logo-dice-v2.png') }}" alt="Lúdika"
+                        style="height:38px; width:auto; object-fit:contain; border-radius:8px;">
+                    Lúdika
+                </a>
+
+                <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto align-items-center gap-2">
+                        @guest
+                            @if (Route::has('login'))
+                                <li class="nav-item">
+                                    <a class="nav-link-ghost" href="{{ route('login') }}">Iniciar sesión</a>
+                                </li>
+                            @endif
+                            @if (Route::has('register'))
+                                <li class="nav-item">
+                                    <a class="nav-link-register" href="{{ route('register') }}">Registrarse</a>
+                                </li>
+                            @endif
+                        @else
+                            {{-- Cart Button --}}
+                            <li class="nav-item d-none d-md-block" style="position:relative;">
+                                <button id="cart-toggle" class="navbar-cart-btn" title="Mi carrito">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <circle cx="9" cy="21" r="1" />
+                                        <circle cx="20" cy="21" r="1" />
+                                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                                    </svg>
+                                    <span style="font-size:0.82rem;font-weight:600;">Carrito</span>
+                                    <span id="cart-badge" class="navbar-cart-badge">0</span>
+                                </button>
+
+                                {{-- Cart Dropdown Panel --}}
+                                <div id="cart-panel"
+                                    style="display:none;position:absolute;top:calc(100% + 14px);right:0;
+                                                                                         width:330px;background:#fff;border-radius:16px;
+                                                                                         box-shadow:0 12px 40px rgba(30,111,92,0.20);
+                                                                                         border:1.5px solid #69B578;z-index:9999;overflow:hidden;">
+                                    <div
+                                        style="background:linear-gradient(135deg,#1E6F5C,#2C2C2C);padding:14px 18px;
+                                                                                                    display:flex;align-items:center;justify-content:space-between;">
+                                        <span
+                                            style="color:#fff;font-weight:700;font-size:0.97rem;display:flex;align-items:center;gap:8px;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <circle cx="9" cy="21" r="1" />
+                                                <circle cx="20" cy="21" r="1" />
+                                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                                            </svg>
+                                            Mi Carrito
+                                        </span>
+                                        <button id="cart-panel-close"
+                                            style="background:none;border:none;color:rgba(255,255,255,0.85);font-size:1.3rem;cursor:pointer;line-height:1;padding:0;">&times;</button>
+                                    </div>
+                                    <div id="cart-panel-body" style="max-height:290px;overflow-y:auto;padding:14px 16px;">
+                                        <p style="text-align:center;color:#bbb;font-size:0.88rem;">Cargando...</p>
+                                    </div>
+                                    <div style="padding:12px 18px;border-top:1.5px solid #d6ead8;background:#f4faf5;">
+                                        <div
+                                            style="display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:0.95rem;">
+                                            <span style="color:#2d2d2d;">Total:</span>
+                                            <span id="cart-total" style="color:#1E6F5C;font-size:1.05rem;">$0.00</span>
+                                        </div>
+                                        <a href="{{ route('cart.index') }}"
+                                            style="display:flex;align-items:center;justify-content:center;gap:7px;
+                                                                                                       margin-top:11px;width:100%;padding:10px;
+                                                                                                       background:linear-gradient(135deg,#1E6F5C,#2C2C2C);
+                                                                                                       color:#fff;border-radius:50px;text-decoration:none;
+                                                                                                       font-size:.88rem;font-weight:700;
+                                                                                                       box-shadow:0 3px 12px rgba(30,111,92,.35);
+                                                                                                       transition:opacity .2s;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <circle cx="9" cy="21" r="1" />
+                                                <circle cx="20" cy="21" r="1" />
+                                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                                            </svg>
+                                            Ver carrito completo
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+
+                            {{-- User Dropdown --}}
+                            <li class="nav-item dropdown d-none d-md-block">
+                                <a id="navbarDropdown" class="navbar-user-chip dropdown-toggle" href="#" role="button"
+                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    <span class="navbar-user-avatar" style="overflow:hidden;">
+                                        @if(Auth::user()->hasAvatar())
+                                            <img src="{{ Auth::user()->avatar_url }}" alt="{{ Auth::user()->name }}"
+                                                style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+                                        @else
+                                            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                        @endif
+                                    </span>
+                                    {{ Auth::user()->name }}
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{{ route('profile.edit') }}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                            stroke-linejoin="round" style="margin-right:6px;">
+                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                            <circle cx="12" cy="7" r="4" />
+                                        </svg>
+                                        Editar perfil
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                            stroke-linejoin="round" style="margin-right:6px;">
+                                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                            <polyline points="16 17 21 12 16 7" />
+                                            <line x1="21" y1="12" x2="9" y2="12" />
+                                        </svg>
+                                        Cerrar sesión
+                                    </a>
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                        @csrf
+                                    </form>
+                                </div>
+                            </li>
+
+                            <li class="nav-item d-md-none">
+                                <div class="mobile-auth-links">
+                                    <a class="mobile-auth-link" href="{{ route('cart.index') }}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <circle cx="9" cy="21" r="1" />
+                                            <circle cx="20" cy="21" r="1" />
+                                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                                        </svg>
+                                        Carrito
+                                    </a>
+                                    <hr class="mobile-auth-divider">
+                                    <a class="mobile-auth-link" href="{{ route('profile.edit') }}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                            <circle cx="12" cy="7" r="4" />
+                                        </svg>
+                                        Editar perfil
+                                    </a>
+                                    <hr class="mobile-auth-divider">
+                                    <button class="mobile-auth-btn" type="button"
+                                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                            <polyline points="16 17 21 12 16 7" />
+                                            <line x1="21" y1="12" x2="9" y2="12" />
+                                        </svg>
+                                        Cerrar sesión
+                                    </button>
+                                </div>
+                            </li>
+                        @endguest
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        {{-- ===== TOAST NOTIFICATION ===== --}}
+        <div id="cart-toast">
+            <div style="display:flex;align-items:center;gap:12px;">
+                <span style="display:flex;align-items:center;justify-content:center;
+                         width:40px;height:40px;background:linear-gradient(135deg,#1E6F5C,#2C2C2C);
+                         border-radius:50%;flex-shrink:0;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none"
+                        stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                </span>
+                <div>
+                    <p style="margin:0;font-weight:700;font-size:0.92rem;color:#2C2C2C;">¡Producto añadido al carrito!
+                    </p>
+                    <p id="cart-toast-name" style="margin:2px 0 0;font-size:0.82rem;color:#1E6F5C;"></p>
+                </div>
+            </div>
+        </div>
+
+        {{-- ===== QUANTITY MODAL ===== --}}
+        <div id="qty-modal-overlay">
+            <div id="qty-modal">
+                <div id="qty-modal-header">
+                    <p id="qty-modal-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="9" cy="21" r="1" />
+                            <circle cx="20" cy="21" r="1" />
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                        </svg>
+                        Añadir al carrito
+                    </p>
+                    <button id="qty-modal-close" aria-label="Cerrar">&times;</button>
+                </div>
+                <div id="qty-modal-body">
+                    <p id="qty-modal-product-name"></p>
+                    <p id="qty-modal-product-price"></p>
+                    <span class="qty-label">Selecciona la cantidad:</span>
+                    <div class="qty-stepper">
+                        <button type="button" id="qty-minus" aria-label="Reducir cantidad">âˆ’</button>
+                        <input type="number" id="qty-input" value="1" min="1" max="99">
+                        <button type="button" id="qty-plus" aria-label="Aumentar cantidad">+</button>
+                    </div>
+                    <button type="button" id="qty-modal-confirm">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="9" cy="21" r="1" />
+                            <circle cx="20" cy="21" r="1" />
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                        </svg>
+                        Agregar al carrito
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        {{-- ===== SUCCESS PURCHASE MODAL ===== --}}
+        @if(session('success'))
+            <div id="purchase-success-overlay" class="open">
+                <div id="purchase-success-modal">
+                    <div id="purchase-success-header">
+                        <div class="success-confetti" id="confetti-container"></div>
+                        <div class="success-check-circle">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="none"
+                                stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                        </div>
+                        <h2>¡Compra realizada con éxito!</h2>
+                    </div>
+                    <div id="purchase-success-body">
+                        <p id="purchase-success-msg">{{ session('success') }}</p>
+                        <button id="purchase-success-close"
+                            onclick="document.getElementById('purchase-success-overlay').classList.remove('open')">
+                            ¡Entendido, gracias! !
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <script>
+                /* Confetti animation */
+                (function () {
+                    var colors = ['#1E6F5C', '#69B578', '#C9A227', '#EAD8B1', '#fff', '#2C2C2C'];
+                    var container = document.getElementById('confetti-container');
+                    if (!container) return;
+                    for (var i = 0; i < 28; i++) {
+                        var el = document.createElement('span');
+                        var size = Math.random() * 8 + 5;
+                        el.style.cssText = [
+                            'left:' + Math.random() * 100 + '%',
+                            'width:' + size + 'px',
+                            'height:' + (size * 0.4) + 'px',
+                            'background:' + colors[Math.floor(Math.random() * colors.length)],
+                            'animation-delay:' + (Math.random() * 0.6) + 's',
+                            'animation-duration:' + (Math.random() * 0.6 + 0.9) + 's'
+                        ].join(';');
+                        container.appendChild(el);
+                    }
+                })();
+            </script>
+        @endif
+
+        {{-- ===== PAGE CONTENT ===== --}}
+        <main class="py-4">
+            @yield('content')
+        </main>
+
+        {{-- ===== FOOTER ===== --}}
+        <footer style="
+            background: linear-gradient(90deg, #0d1f18 0%, #1E6F5C 50%, #0d1f18 100%);
+            border-top: 2px solid rgba(105,181,120,0.30);
+            padding: 48px 0 0;
+            margin-top: auto;
+        ">
+            <div class="container">
+                <div
+                    style="display:flex; flex-wrap:wrap; gap:40px; justify-content:space-between; padding-bottom:36px;">
+
+                    {{-- Brand column --}}
+                    <div style="min-width:220px; flex:1 1 220px; max-width:280px;">
+                        <a href="{{ url('/') }}"
+                            style="display:inline-flex; align-items:center; gap:10px; text-decoration:none; margin-bottom:14px;">
+                            <img src="{{ asset('images/logo-dice-v2.png') }}" alt="Lúdika"
+                                style="height:40px; width:auto; object-fit:contain; border-radius:8px; flex-shrink:0;">
+                            <span
+                                style="font-size:1.15rem; font-weight:800; color:#fff; letter-spacing:0.3px;">Lúdika</span>
+                        </a>
+                        <p style="color:rgba(255,255,255,0.60); font-size:0.875rem; line-height:1.65; margin:0;">
+                            Tu tienda de confianza. Productos seleccionados con calidad y atenciÃ³n personalizada para
+                            cada cliente.
+                        </p>
+                    </div>
+
+                    {{-- Quick links --}}
+                    <div style="min-width:140px; flex:1 1 140px;">
+                        <h6
+                            style="color:#C9A227; font-size:0.78rem; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; margin-bottom:16px;">
+                            NavegaciÃ³n</h6>
+                        <ul
+                            style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px;">
+                            <li>
+                                <a href="{{ url('/') }}"
+                                    style="color:rgba(255,255,255,0.70); font-size:0.875rem; text-decoration:none; transition:color 0.2s;"
+                                    onmouseover="this.style.color='#69B578'"
+                                    onmouseout="this.style.color='rgba(255,255,255,0.70)'">
+                                    Inicio
+                                </a>
+                            </li>
+                            @auth
+                                <li>
+                                    <a href="{{ route('home') }}"
+                                        style="color:rgba(255,255,255,0.70); font-size:0.875rem; text-decoration:none; transition:color 0.2s;"
+                                        onmouseover="this.style.color='#69B578'"
+                                        onmouseout="this.style.color='rgba(255,255,255,0.70)'">
+                                        Tienda
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('cart.index') }}"
+                                        style="color:rgba(255,255,255,0.70); font-size:0.875rem; text-decoration:none; transition:color 0.2s;"
+                                        onmouseover="this.style.color='#69B578'"
+                                        onmouseout="this.style.color='rgba(255,255,255,0.70)'">
+                                        Mi carrito
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('profile.edit') }}"
+                                        style="color:rgba(255,255,255,0.70); font-size:0.875rem; text-decoration:none; transition:color 0.2s;"
+                                        onmouseover="this.style.color='#69B578'"
+                                        onmouseout="this.style.color='rgba(255,255,255,0.70)'">
+                                        Mi perfil
+                                    </a>
+                                </li>
+                            @else
+                                <li>
+                                    <a href="{{ route('login') }}"
+                                        style="color:rgba(255,255,255,0.70); font-size:0.875rem; text-decoration:none; transition:color 0.2s;"
+                                        onmouseover="this.style.color='#69B578'"
+                                        onmouseout="this.style.color='rgba(255,255,255,0.70)'">
+                                        Iniciar sesión
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('register') }}"
+                                        style="color:rgba(255,255,255,0.70); font-size:0.875rem; text-decoration:none; transition:color 0.2s;"
+                                        onmouseover="this.style.color='#69B578'"
+                                        onmouseout="this.style.color='rgba(255,255,255,0.70)'">
+                                        Crear cuenta
+                                    </a>
+                                </li>
+                            @endauth
+                        </ul>
+                    </div>
+
+                    {{-- Contact / Info --}}
+                    <div style="min-width:180px; flex:1 1 180px;">
+                        <h6
+                            style="color:#C9A227; font-size:0.78rem; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; margin-bottom:16px;">
+                            Contacto</h6>
+                        <ul
+                            style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:12px;">
+                            <li
+                                style="display:flex; align-items:flex-start; gap:9px; color:rgba(255,255,255,0.65); font-size:0.85rem;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                    fill="none" stroke="#69B578" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                                    <circle cx="12" cy="10" r="3" />
+                                </svg>
+                                MÃ©xico
+                            </li>
+                            <li
+                                style="display:flex; align-items:flex-start; gap:9px; color:rgba(255,255,255,0.65); font-size:0.85rem;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                    fill="none" stroke="#69B578" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;">
+                                    <path
+                                        d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                                    <polyline points="22,6 12,13 2,6" />
+                                </svg>
+                                contacto@yadirasstore.com
+                            </li>
+                            <li
+                                style="display:flex; align-items:flex-start; gap:9px; color:rgba(255,255,255,0.65); font-size:0.85rem;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                    fill="none" stroke="#69B578" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;">
+                                    <path
+                                        d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.56 2 2 0 0 1 3.56 1.36h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9.1a16 16 0 0 0 6 6l1.01-.9a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21.73 16.92z" />
+                                </svg>
+                                +52 (55) 0000-0000
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                {{-- Bottom bar --}}
+                <div style="
+                    border-top: 1px solid rgba(105,181,120,0.20);
+                    padding: 18px 0;
+                    display: flex;
+                    flex-wrap: wrap;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 12px;
+                ">
+                    <p style="color:rgba(255,255,255,0.40); font-size:0.8rem; margin:0;">
+                        &copy; {{ date('Y') }} Lúdika. Todos los derechos reservados.
+                    </p>
+                    <p style="color:rgba(255,255,255,0.30); font-size:0.78rem; margin:0;">
+                        Hecho con <span style="color:#C9A227;">â™¥</span> en MÃ©xico
+                    </p>
+                </div>
+            </div>
+        </footer>
+
+    </div>{{-- /#app --}}
+
+    {{-- ======================================================= --}}
+    {{-- MAIN CART SCRIPT â€” defined BEFORE @stack so window.addToCart
+    is always available when onclick handlers in child views fire --}}
+    {{-- ======================================================= --}}
+    <script>
+        /* â”€â”€â”€ helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        function _cartFormatMoney(v) {
+            return '$' + parseFloat(v).toFixed(2);
+        }
+
+        function _cartUpdateBadge(count) {
+            var badge = document.getElementById('cart-badge');
+            if (!badge) return;
+            if (count > 0) {
+                badge.textContent = count > 99 ? '99+' : count;
+                badge.style.display = 'inline-flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function _cartShowToast(name) {
+            var toast = document.getElementById('cart-toast');
+            var toastName = document.getElementById('cart-toast-name');
+            if (!toast) return;
+            if (toastName) toastName.textContent = name || '';
+            toast.style.display = 'block';
+            requestAnimationFrame(function () {
+                requestAnimationFrame(function () { toast.classList.add('show'); });
+            });
+            clearTimeout(window._cartToastTimer);
+            window._cartToastTimer = setTimeout(function () {
+                toast.classList.remove('show');
+                setTimeout(function () { toast.style.display = 'none'; }, 350);
+            }, 3000);
+        }
+
+        /* â”€â”€â”€ GLOBAL addToCart â€” opens the qty modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        window.addToCart = function (productId, btn, name, price) {
+            var overlay = document.getElementById('qty-modal-overlay');
+            var inp = document.getElementById('qty-input');
+            if (!overlay || !inp) {
+                /* fallback: add qty=1 directly if modal not found */
+                _cartDoAdd(productId, 1, btn);
+                return;
+            }
+            window._cartPendingId = productId;
+            window._cartPendingBtn = btn;
+            inp.value = 1;
+            var nameEl = document.getElementById('qty-modal-product-name');
+            var priceEl = document.getElementById('qty-modal-product-price');
+            if (nameEl) nameEl.textContent = name || '';
+            if (priceEl) priceEl.textContent = price ? '$' + parseFloat(price).toFixed(2) : '';
+            overlay.classList.add('open');
+            inp.focus();
+        };
+
+        /* â”€â”€â”€ actual POST to /cart/add â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        function _cartDoAdd(productId, qty, btn) {
+            if (btn) btn.disabled = true;
+            fetch('/cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': (document.querySelector('meta[name=csrf-token]') || {}).content || '',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ product_id: productId, qty: qty })
+            })
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    _cartUpdateBadge(data.count);
+                    /* bounce animation on cart button */
+                    var toggle = document.getElementById('cart-toggle');
+                    if (toggle) {
+                        toggle.style.transform = 'scale(1.35)';
+                        toggle.style.transition = 'transform 0.15s ease';
+                        setTimeout(function () { toggle.style.transform = 'scale(1)'; }, 220);
+                    }
+                    _cartShowToast(data.name || '');
+                    if (btn) { btn.classList.add('cart-added'); btn.title = 'AÃ±adido al carrito'; }
+                    /* refresh panel if open */
+                    var panel = document.getElementById('cart-panel');
+                    if (panel && panel.style.display !== 'none') _cartLoadPanel();
+                    setTimeout(function () {
+                        if (btn) { btn.disabled = false; btn.classList.remove('cart-added'); }
+                    }, 1400);
+                })
+                .catch(function () { if (btn) btn.disabled = false; });
+        }
+
+        /* â”€â”€â”€ load cart dropdown panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        function _cartLoadPanel() {
+            var body = document.getElementById('cart-panel-body');
+            if (body) body.innerHTML = '<p style="text-align:center;color:#bbb;font-size:.88rem;padding:18px 0;">Cargando...</p>';
+            fetch('/cart/items', { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    _cartUpdateBadge(data.count);
+                    _cartRenderPanel(data);
+                })
+                .catch(function () {
+                    var b = document.getElementById('cart-panel-body');
+                    if (b) b.innerHTML = '<p style="color:#1E6F5C;text-align:center;padding:16px 0;">Error al cargar.</p>';
+                });
+        }
+
+        function _cartRenderPanel(data) {
+            var body = document.getElementById('cart-panel-body');
+            var total = document.getElementById('cart-total');
+            if (!body) return;
+            if (!data.items || data.items.length === 0) {
+                body.innerHTML = '<div style="text-align:center;padding:28px 0;color:#bbb;">'
+                    + '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#69B578" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:0 auto 10px;">'
+                    + '<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>'
+                    + '<path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>'
+                    + '<p style="font-size:.9rem;margin:0;">Tu carrito estÃ¡ vacÃ­o</p></div>';
+                if (total) total.textContent = '$0.00';
+                return;
+            }
+            var html = '<table style="width:100%;border-collapse:collapse;font-size:.84rem;">'
+                + '<thead><tr style="border-bottom:2px solid #d6ead8;">'
+                + '<th style="text-align:left;padding:6px 4px;color:#1E6F5C;font-weight:700;">Producto</th>'
+                + '<th style="text-align:center;padding:6px 4px;color:#1E6F5C;font-weight:700;">Cant.</th>'
+                + '<th style="text-align:right;padding:6px 4px;color:#1E6F5C;font-weight:700;">Subtotal</th>'
+                + '</tr></thead><tbody>';
+            data.items.forEach(function (item) {
+                html += '<tr style="border-bottom:1px solid #eef6ef;">'
+                    + '<td style="padding:9px 4px;color:#2d2d2d;font-weight:500;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + item.name + '</td>'
+                    + '<td style="padding:9px 4px;text-align:center;"><span style="display:inline-flex;align-items:center;justify-content:center;background:#eef6ef;border:1.5px solid #69B578;border-radius:50px;min-width:30px;padding:2px 8px;color:#1E6F5C;font-weight:700;">' + item.qty + '</span></td>'
+                    + '<td style="padding:9px 4px;text-align:right;color:#1E6F5C;font-weight:700;">' + _cartFormatMoney(item.subtotal) + '</td>'
+                    + '</tr>';
+            });
+            html += '</tbody></table>';
+            body.innerHTML = html;
+            if (total) total.textContent = _cartFormatMoney(data.total);
+        }
+
+        /* â”€â”€â”€ Wire up everything once the DOM is ready â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        document.addEventListener('DOMContentLoaded', function () {
+
+            @guest
+                /* redirect cached login page on back-button */
+                window.addEventListener('pageshow', function (e) {
+                    if (e.persisted) window.location.replace('/');
+                });
+            @endguest
+
+            @auth
+                                                        /* redirect authenticated users away from auth pages */
+                                                        if (/\/(login|register)/.test(window.location.pathname)) {
+                    window.location.replace('/home');
+                }
+
+                /* â”€â”€ cart badge on load â”€â”€ */
+                fetch('/cart/count', { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                    .then(function (r) { return r.json(); })
+                    .then(function (data) { _cartUpdateBadge(data.count); })
+                    .catch(function () { });
+
+                /* â”€â”€ cart panel toggle â”€â”€ */
+                var cartPanel = document.getElementById('cart-panel');
+                var cartToggle = document.getElementById('cart-toggle');
+                var cartClose = document.getElementById('cart-panel-close');
+
+                if (cartToggle && cartPanel) {
+                    cartToggle.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        var open = cartPanel.style.display !== 'none';
+                        cartPanel.style.display = open ? 'none' : 'block';
+                        if (!open) _cartLoadPanel();
+                    });
+                }
+                if (cartClose && cartPanel) {
+                    cartClose.addEventListener('click', function () { cartPanel.style.display = 'none'; });
+                }
+                document.addEventListener('click', function (e) {
+                    if (!cartPanel || cartPanel.style.display === 'none') return;
+                    if (!cartPanel.contains(e.target) && cartToggle && !cartToggle.contains(e.target)) {
+                        cartPanel.style.display = 'none';
+                    }
+                });
+
+                /* â”€â”€ qty modal wiring â”€â”€ */
+                var qtyOverlay = document.getElementById('qty-modal-overlay');
+                var qtyInput = document.getElementById('qty-input');
+                var qtyMinus = document.getElementById('qty-minus');
+                var qtyPlus = document.getElementById('qty-plus');
+                var qtyConfirm = document.getElementById('qty-modal-confirm');
+                var qtyModalClose = document.getElementById('qty-modal-close');
+
+                function closeQtyModal() {
+                    if (qtyOverlay) qtyOverlay.classList.remove('open');
+                    window._cartPendingId = null;
+                    window._cartPendingBtn = null;
+                }
+
+                if (qtyMinus && qtyInput) {
+                    qtyMinus.addEventListener('click', function () {
+                        var v = parseInt(qtyInput.value) || 1;
+                        if (v > 1) qtyInput.value = v - 1;
+                    });
+                }
+                if (qtyPlus && qtyInput) {
+                    qtyPlus.addEventListener('click', function () {
+                        var v = parseInt(qtyInput.value) || 1;
+                        if (v < 99) qtyInput.value = v + 1;
+                    });
+                }
+                if (qtyModalClose) qtyModalClose.addEventListener('click', closeQtyModal);
+                if (qtyOverlay) {
+                    qtyOverlay.addEventListener('click', function (e) {
+                        if (e.target === qtyOverlay) closeQtyModal();
+                    });
+                }
+
+                if (qtyConfirm && qtyInput) {
+                    qtyConfirm.addEventListener('click', function () {
+                        var qty = Math.min(99, Math.max(1, parseInt(qtyInput.value) || 1));
+                        var productId = window._cartPendingId;
+                        var btn = window._cartPendingBtn;
+                        closeQtyModal();
+                        qtyConfirm.disabled = true;
+                        _cartDoAdd(productId, qty, btn);
+                        setTimeout(function () { qtyConfirm.disabled = false; }, 1600);
+                    });
+                }
+
+                /* Allow pressing Enter in the qty input to confirm */
+                if (qtyInput) {
+                    qtyInput.addEventListener('keydown', function (e) {
+                        if (e.key === 'Enter' && qtyConfirm) qtyConfirm.click();
+                    });
+                }
+            @endauth
+    });
+    </script>
+
+    @stack('scripts')
+</body>
+
+</html>
+
+

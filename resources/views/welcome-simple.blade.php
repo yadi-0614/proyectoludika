@@ -1,0 +1,692 @@
+@extends('layouts.app')
+
+@section('content')
+
+    {{-- ===== HERO SECTION ===== --}}
+    <section class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="container hero-content">
+            @guest
+                <h1 class="hero-title">¡Bienvenido a nuestra tienda!</h1>
+                <p class="hero-subtitle">Descubre nuestra colección de productos exclusivos.</p>
+                <a href="#acerca-de" class="hero-btn">
+                    Acerca de &rarr;
+                </a>
+            @else
+                <h1 class="hero-title">¡Hola, {{ Auth::user()->name }}!</h1>
+                <p class="hero-subtitle">Explora nuestra colección o ve al menú principal.</p>
+                <a href="{{ route('home') }}" class="hero-btn">
+                    Ir al menú &rarr;
+                </a>
+            @endguest
+        </div>
+    </section>
+
+    {{-- ===== ABOUT SECTION ===== --}}
+    <section id="acerca-de" class="about-section">
+        <div class="container about-content">
+            <h2 class="about-title">Acerca de</h2>
+            <p class="about-text">
+                En Ludika seleccionamos productos de calidad para ofrecer una experiencia de compra simple,
+                confiable y cercana para todos nuestros clientes.
+            </p>
+        </div>
+    </section>
+
+    {{-- ===== PRODUCTS SECTION ===== --}}
+    <div class="container products-container">
+
+        {{-- Section Header --}}
+        <div class="section-header">
+            <h2 class="section-title">Nuestros Productos</h2>
+            <div class="section-divider"></div>
+            <p class="section-subtitle">Encuentra lo que buscas entre nuestra selección</p>
+        </div>
+
+        {{-- Search Bar --}}
+        <div class="search-section">
+            <form method="GET" action="{{ url('/') }}">
+                <div class="search-bar">
+                    <span class="search-bar__icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="7" />
+                            <line x1="16.5" y1="16.5" x2="22" y2="22" />
+                        </svg>
+                    </span>
+                    <input type="text" name="search" id="search" class="search-bar__input"
+                        placeholder="Buscar producto por nombre..." value="{{ $search }}" autocomplete="off">
+                    @if($search)
+                        <a href="{{ url('/') }}" class="search-bar__clear" title="Limpiar búsqueda">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18" />
+                                <line x1="6" y1="6" x2="18" y2="18" />
+                            </svg>
+                        </a>
+                    @endif
+                    <button type="submit" class="search-bar__btn">
+                        Buscar
+                    </button>
+                </div>
+                @if($search)
+                    <p class="search-hint">
+                        Resultados para: <strong>"{{ $search }}"</strong>
+                        &mdash; <a href="{{ url('/') }}">Ver todos</a>
+                    </p>
+                @endif
+            </form>
+        </div>
+
+        {{-- Products Grid --}}
+        @if($products->count() > 0)
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
+                @foreach($products as $product)
+                    <div class="col">
+                        <div class="product-card">
+                            {{-- Image --}}
+                            <div class="product-card__img-wrap">
+                                @if($product->image && Storage::disk('public')->exists($product->image))
+                                    <img src="{{ asset('storage/' . $product->image) }}" class="product-card__img"
+                                        alt="{{ $product->name }}">
+                                @else
+                                    <div class="product-card__img-placeholder">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
+                                            stroke="#69B578" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                            <circle cx="8.5" cy="8.5" r="1.5" />
+                                            <polyline points="21 15 16 10 5 21" />
+                                        </svg>
+                                    </div>
+                                @endif
+                                <div class="product-card__badge">${{ number_format($product->price, 2) }}</div>
+                            </div>
+
+                            {{-- Body --}}
+                            <div class="product-card__body">
+                                <h5 class="product-card__title">{{ $product->name }}</h5>
+                                <p class="product-card__desc">{{ Str::limit($product->description, 80) }}</p>
+                                <div class="product-card__footer">
+                                    @guest
+                                        <a href="{{ route('login') }}" class="product-card__btn product-card__btn--outline">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                                stroke-linejoin="round" style="margin-right:4px;">
+                                                <circle cx="11" cy="11" r="8" />
+                                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                                            </svg>
+                                            Ver más
+                                        </a>
+                                        <a href="{{ route('login') }}" class="product-card__cart-btn"
+                                            title="Inicia sesión para añadir al carrito">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                                                stroke-linejoin="round">
+                                                <circle cx="9" cy="21" r="1" />
+                                                <circle cx="20" cy="21" r="1" />
+                                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                                            </svg>
+                                        </a>
+                                    @else
+                                        <a href="{{ route('product.show', $product->id) }}"
+                                            class="product-card__btn product-card__btn--solid">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                                stroke-linejoin="round" style="margin-right:4px;">
+                                                <circle cx="11" cy="11" r="8" />
+                                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                                            </svg>
+                                            Ver producto
+                                        </a>
+                                        <button type="button" class="product-card__cart-btn" title="Añadir al carrito"
+                                            onclick="addToCart({{ $product->id }}, this)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                                                stroke-linejoin="round">
+                                                <circle cx="9" cy="21" r="1" />
+                                                <circle cx="20" cy="21" r="1" />
+                                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                                            </svg>
+                                        </button>
+                                    @endguest
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            {{-- Pagination --}}
+            <div class="pagination-wrapper">
+                {{ $products->links('pagination::bootstrap-5') }}
+            </div>
+
+        @else
+            <div class="empty-state">
+                <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#69B578"
+                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="7" />
+                    <line x1="16.5" y1="16.5" x2="22" y2="22" />
+                </svg>
+                @if($search)
+                    <p>No se encontraron productos con el nombre <strong>"{{ $search }}"</strong>.</p>
+                    <a href="{{ url('/') }}" class="empty-state__link">Ver todos los productos</a>
+                @else
+                    <p>No hay productos disponibles en este momento.</p>
+                @endif
+            </div>
+        @endif
+
+    </div>
+@endsection
+
+@push('styles')
+    <style>
+        /* ===== CSS VARIABLES ===== */
+        :root {
+            --verde-selva: #1E6F5C;
+            --verde-hoja: #69B578;
+            --dorado: #C9A227;
+            --negro-bosque: #2C2C2C;
+            --text-dark: #2d2d2d;
+            --text-muted: #7a7a7a;
+            --bg-page: #f7f4ee;
+            --radius-card: 14px;
+            --shadow-card: 0 4px 20px rgba(30, 111, 92, 0.10);
+            --shadow-hover: 0 10px 32px rgba(30, 111, 92, 0.20);
+        }
+
+        body {
+            background-color: var(--bg-page);
+        }
+
+        /* ===== HERO ===== */
+        .hero-section {
+            position: relative;
+            background: linear-gradient(135deg, var(--negro-bosque) 0%, var(--verde-selva) 55%, var(--verde-hoja) 100%);
+            padding: 80px 0 70px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title {
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 0.6rem;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.88);
+            margin-bottom: 1.8rem;
+        }
+
+        .hero-btn {
+            display: inline-block;
+            background: #fff;
+            color: var(--verde-selva);
+            font-weight: 700;
+            font-size: 0.95rem;
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .hero-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            color: var(--negro-bosque);
+        }
+
+        /* ===== ABOUT ===== */
+        .about-section {
+            background: #fff;
+            border-top: 1px solid rgba(30, 111, 92, 0.12);
+            border-bottom: 1px solid rgba(30, 111, 92, 0.12);
+            padding: 44px 0;
+        }
+
+        .about-content {
+            max-width: 900px;
+            text-align: center;
+        }
+
+        .about-title {
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.8rem;
+        }
+
+        .about-text {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.7;
+            margin: 0 auto;
+        }
+
+        /* ===== PRODUCTS CONTAINER ===== */
+        .products-container {
+            padding-top: 56px;
+            padding-bottom: 60px;
+        }
+
+        /* ===== SECTION HEADER ===== */
+        .section-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .section-title {
+            font-size: 1.85rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-divider {
+            width: 56px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--verde-selva), var(--verde-hoja));
+            border-radius: 4px;
+            margin: 0.5rem auto 0.9rem;
+        }
+
+        .section-subtitle {
+            color: var(--text-muted);
+            font-size: 0.97rem;
+        }
+
+        /* ===== SEARCH BAR ===== */
+        .search-section {
+            max-width: 580px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            border: 2px solid var(--verde-hoja);
+            border-radius: 50px;
+            padding: 0.3rem 0.3rem 0.3rem 1.1rem;
+            box-shadow: 0 4px 18px rgba(30, 111, 92, 0.10);
+            transition: border-color 0.25s, box-shadow 0.25s;
+        }
+
+        .search-bar:focus-within {
+            border-color: var(--verde-selva);
+            box-shadow: 0 4px 22px rgba(30, 111, 92, 0.20);
+        }
+
+        .search-bar__icon {
+            color: var(--verde-selva);
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+            margin-right: 0.5rem;
+        }
+
+        .search-bar__input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 0.95rem;
+            background: transparent;
+            color: var(--text-dark);
+            min-width: 0;
+        }
+
+        .search-bar__input::placeholder {
+            color: #bbb;
+        }
+
+        .search-bar__clear {
+            color: var(--verde-hoja);
+            display: flex;
+            align-items: center;
+            padding: 0 0.5rem;
+            text-decoration: none;
+            transition: color 0.2s;
+            flex-shrink: 0;
+        }
+
+        .search-bar__clear:hover {
+            color: var(--verde-selva);
+        }
+
+        .search-bar__btn {
+            background: linear-gradient(135deg, var(--verde-selva), var(--negro-bosque));
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 0.6rem 1.4rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.15s;
+            flex-shrink: 0;
+        }
+
+        .search-bar__btn:hover {
+            opacity: 0.9;
+            transform: scale(1.03);
+        }
+
+        .search-hint {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.6rem;
+        }
+
+        .search-hint a {
+            color: var(--verde-selva);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .search-hint a:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== PRODUCT CARD ===== */
+        .product-card {
+            background: #fff;
+            border-radius: var(--radius-card);
+            overflow: hidden;
+            box-shadow: var(--shadow-card);
+            border: 1px solid rgba(105, 181, 120, 0.25);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--verde-hoja);
+        }
+
+        .product-card__img-wrap {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card__img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+
+        .product-card:hover .product-card__img {
+            transform: scale(1.06);
+        }
+
+        .product-card__img-placeholder {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #eef6ef, #d6ead8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-card__badge {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, var(--verde-selva), var(--negro-bosque));
+            color: #fff;
+            font-size: 0.82rem;
+            font-weight: 700;
+            padding: 0.25rem 0.65rem;
+            border-radius: 50px;
+            box-shadow: 0 2px 8px rgba(30, 111, 92, 0.3);
+        }
+
+        .product-card__body {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .product-card__title {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.35rem;
+            line-height: 1.3;
+        }
+
+        .product-card__desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            flex: 1;
+            margin-bottom: 0.75rem;
+        }
+
+        .product-card__footer {
+            margin-top: auto;
+        }
+
+        .product-card__btn {
+            display: block;
+            width: 100%;
+            text-align: center;
+            padding: 0.5rem 0;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .product-card__btn--solid {
+            background: linear-gradient(135deg, var(--verde-selva), var(--negro-bosque));
+            color: #fff;
+            border: 2px solid transparent;
+        }
+
+        .product-card__btn--solid:hover {
+            opacity: 0.88;
+            color: #fff;
+            transform: scale(1.02);
+        }
+
+        .product-card__btn--outline {
+            background: transparent;
+            color: var(--verde-selva);
+            border: 2px solid var(--verde-selva);
+        }
+
+        .product-card__btn--outline:hover {
+            background: var(--verde-selva);
+            color: #fff;
+        }
+
+        /* ===== CART BUTTON ===== */
+        .product-card__footer {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .product-card__btn {
+            flex: 1;
+        }
+
+        .product-card__cart-btn {
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #eef6ef;
+            border: 2px solid var(--verde-hoja);
+            color: var(--verde-selva);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            padding: 0;
+        }
+
+        .product-card__cart-btn:hover {
+            background: var(--verde-selva);
+            border-color: var(--verde-selva);
+            color: #fff;
+            transform: scale(1.12);
+        }
+
+        .product-card__cart-btn.cart-added {
+            background: var(--negro-bosque);
+            border-color: var(--negro-bosque);
+            color: #fff;
+        }
+
+        .product-card__cart-btn:disabled {
+            opacity: 0.7;
+            cursor: wait;
+        }
+
+        /* ===== PAGINATION ===== */
+        .pagination-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-top: 3rem;
+        }
+
+        .pagination {
+            gap: 0.4rem;
+            margin-bottom: 0;
+        }
+
+        .pagination .page-item {
+            margin: 0;
+        }
+
+        .pagination .page-link {
+            color: var(--verde-selva);
+            background: #fff;
+            border: 1.5px solid var(--verde-hoja);
+            padding: 0.55rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            min-width: 42px;
+            text-align: center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s ease;
+            box-shadow: 0 1px 4px rgba(30, 111, 92, 0.08);
+        }
+
+        .pagination .page-link:hover {
+            background: var(--verde-selva);
+            border-color: var(--verde-selva);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 111, 92, 0.28);
+        }
+
+        .pagination .page-item.active .page-link {
+            background: linear-gradient(135deg, var(--verde-selva), var(--negro-bosque));
+            border-color: var(--negro-bosque);
+            color: #fff;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(30, 111, 92, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .pagination .page-item.disabled .page-link {
+            color: #ccc;
+            background: #fafafa;
+            border-color: #eee;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        .pagination .page-item.disabled .page-link:hover {
+            transform: none;
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 1rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state svg {
+            margin-bottom: 1.2rem;
+            opacity: 0.7;
+        }
+
+        .empty-state p {
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .empty-state__link {
+            color: var(--verde-selva);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .empty-state__link:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 1.7rem;
+            }
+
+            .hero-section {
+                padding: 50px 0 45px;
+            }
+
+            .product-card__img,
+            .product-card__img-placeholder {
+                height: 150px;
+            }
+
+            .pagination .page-link {
+                padding: 0.4rem 0.7rem;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+@endpush
+
+@push('scripts')
+    <script>
+        // Future enhancements
+    </script>
+@endpush
