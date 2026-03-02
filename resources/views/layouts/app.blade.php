@@ -856,7 +856,7 @@
                     <p id="qty-modal-product-price"></p>
                     <span class="qty-label">Selecciona la cantidad:</span>
                     <div class="qty-stepper">
-                        <button type="button" id="qty-minus" aria-label="Reducir cantidad">âˆ’</button>
+                        <button type="button" id="qty-minus" aria-label="Reducir cantidad">-</button>
                         <input type="number" id="qty-input" value="1" min="1" max="99">
                         <button type="button" id="qty-plus" aria-label="Aumentar cantidad">+</button>
                     </div>
@@ -945,7 +945,7 @@
                                 style="font-size:1.15rem; font-weight:800; color:#fff; letter-spacing:0.3px;">Lúdika</span>
                         </a>
                         <p style="color:rgba(255,255,255,0.60); font-size:0.875rem; line-height:1.65; margin:0;">
-                            Tu tienda de confianza. Productos seleccionados con calidad y atenciÃ³n personalizada para
+                            Tu tienda de confianza. Productos seleccionados con calidad y atención personalizada para
                             cada cliente.
                         </p>
                     </div>
@@ -954,7 +954,7 @@
                     <div style="min-width:140px; flex:1 1 140px;">
                         <h6
                             style="color:#C9A227; font-size:0.78rem; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; margin-bottom:16px;">
-                            NavegaciÃ³n</h6>
+                            Navegación</h6>
                         <ul
                             style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px;">
                             <li>
@@ -1026,7 +1026,7 @@
                                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                                     <circle cx="12" cy="10" r="3" />
                                 </svg>
-                                MÃ©xico
+                                México
                             </li>
                             <li
                                 style="display:flex; align-items:flex-start; gap:9px; color:rgba(255,255,255,0.65); font-size:0.85rem;">
@@ -1067,7 +1067,7 @@
                         &copy; {{ date('Y') }} Lúdika. Todos los derechos reservados.
                     </p>
                     <p style="color:rgba(255,255,255,0.30); font-size:0.78rem; margin:0;">
-                        Hecho con <span style="color:#C9A227;">â™¥</span> en MÃ©xico
+                        Hecho con <span style="color:#C9A227;">♥</span> en México
                     </p>
                 </div>
             </div>
@@ -1155,7 +1155,7 @@
                         setTimeout(function () { toggle.style.transform = 'scale(1)'; }, 220);
                     }
                     _cartShowToast(data.name || '');
-                    if (btn) { btn.classList.add('cart-added'); btn.title = 'AÃ±adido al carrito'; }
+                    if (btn) { btn.classList.add('cart-added'); btn.title = 'Añadido al carrito'; }
                     /* refresh panel if open */
                     var panel = document.getElementById('cart-panel');
                     if (panel && panel.style.display !== 'none') _cartLoadPanel();
@@ -1191,7 +1191,7 @@
                     + '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#69B578" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:0 auto 10px;">'
                     + '<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>'
                     + '<path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>'
-                    + '<p style="font-size:.9rem;margin:0;">Tu carrito estÃ¡ vacÃ­o</p></div>';
+                    + '<p style="font-size:.9rem;margin:0;">Tu carrito está vacío</p></div>';
                 if (total) total.textContent = '$0.00';
                 return;
             }
@@ -1317,5 +1317,6 @@
 </body>
 
 </html>
+
 
 

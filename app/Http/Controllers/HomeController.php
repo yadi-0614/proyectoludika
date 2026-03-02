@@ -15,6 +15,7 @@ class HomeController extends Controller
 
     public function index(Request $request)
     {
+        $user = $request->user();
         $search = $request->input('search', '');
 
         $products = Product::when($search, function ($query) use ($search) {
@@ -23,6 +24,21 @@ class HomeController extends Controller
             ->paginate(20)
             ->withQueryString();
 
-        return view("home", compact('products', 'search'));
+        $view = $user && $user->hasRole('admin') ? 'home-admin' : 'home';
+
+        return view($view, compact('products', 'search'));
+    }
+
+    public function admin(Request $request)
+    {
+        $search = $request->input('search', '');
+
+        $products = Product::when($search, function ($query) use ($search) {
+            $query->where('name', 'like', $search . '%');
+        })
+            ->paginate(20)
+            ->withQueryString();
+
+        return view('home-admin', compact('products', 'search'));
     }
 }

@@ -8,9 +8,12 @@
         <div class="container hero-content">
             <h1 class="hero-title">¡Hola, {{ Auth::user()->name }}!</h1>
             <p class="hero-subtitle">Explora nuestra colección de productos exclusivos.</p>
-            <div style="margin-top: 1.5rem;">
+            <div style="margin-top: 1.5rem; display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
                 <a href="#productos-grid" class="hero-btn">
                     Ver productos
+                </a>
+                <a href="{{ route('products.index') }}" class="hero-btn">
+                    Ver tabla de productos
                 </a>
             </div>
         </div>

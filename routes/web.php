@@ -17,6 +17,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 
 Route::get("/", [ProductController::class, "welcome"])->name("welcome");
+Route::view("/acercade", "acercade")->name("acercade");
 
 // Detalle público del producto (accesible sin autenticación)
 Route::get("/producto/{product}", [ProductController::class, "show"])->name("product.show");
@@ -100,6 +101,8 @@ Route::middleware(["auth", "security:auth"])->group(function () {
 
     // Rutas de usuarios (Solo Admin)
     Route::middleware(["role:admin"])->group(function () {
+        Route::get("/home-admin", [HomeController::class, "admin"])->name("home.admin");
+
         Route::resource("users", UserController::class)->except([
             "show",
             "update",

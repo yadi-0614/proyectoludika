@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('content')
 
@@ -9,27 +9,16 @@
             @guest
                 <h1 class="hero-title">¡Bienvenido a nuestra tienda!</h1>
                 <p class="hero-subtitle">Descubre nuestra colección de productos exclusivos.</p>
-                <a href="#acerca-de" class="hero-btn">
-                    Acerca de &rarr;
+                <a href="{{ route('acercade') }}" class="hero-btn">
+                    Acerca de
                 </a>
             @else
                 <h1 class="hero-title">¡Hola, {{ Auth::user()->name }}!</h1>
                 <p class="hero-subtitle">Explora nuestra colección o ve al menú principal.</p>
                 <a href="{{ route('home') }}" class="hero-btn">
-                    Ir al menú &rarr;
+                    Ir al menú
                 </a>
             @endguest
-        </div>
-    </section>
-
-    {{-- ===== ABOUT SECTION ===== --}}
-    <section id="acerca-de" class="about-section">
-        <div class="container about-content">
-            <h2 class="about-title">Acerca de</h2>
-            <p class="about-text">
-                En Ludika seleccionamos productos de calidad para ofrecer una experiencia de compra simple,
-                confiable y cercana para todos nuestros clientes.
-            </p>
         </div>
     </section>
 
@@ -690,3 +679,4 @@
         // Future enhancements
     </script>
 @endpush
+
