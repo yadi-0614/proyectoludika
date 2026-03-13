@@ -12,6 +12,22 @@
     @stack('styles')
 
     <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #app {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-main {
+            padding-top: 12px;
+        }
+
         /* ===== CUSTOM NAVBAR ===== */
         .app-navbar {
             background: linear-gradient(90deg, #0d1f18 0%, #1E6F5C 50%, #0d1f18 100%);
@@ -920,7 +936,7 @@
         @endif
 
         {{-- ===== PAGE CONTENT ===== --}}
-        <main class="py-4">
+        <main class="app-main pb-4">
             @yield('content')
         </main>
 
@@ -1037,7 +1053,7 @@
                                         d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                                     <polyline points="22,6 12,13 2,6" />
                                 </svg>
-                                contacto@yadirasstore.com
+                                juegosludika5@gmail.com
                             </li>
                             <li
                                 style="display:flex; align-items:flex-start; gap:9px; color:rgba(255,255,255,0.65); font-size:0.85rem;">

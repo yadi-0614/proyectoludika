@@ -32,6 +32,18 @@ Route::get("/status", function () {
     ]);
 });
 
+// Stats endpoint for admin panel (public, used by admin views)
+Route::get("/users/stats", function () {
+    $total = \App\Models\User::count();
+    $active = \App\Models\User::where('is_active', true)->count();
+    $inactive = \App\Models\User::where('is_active', false)->count();
+    return response()->json([
+        'total' => $total,
+        'active' => $active,
+        'inactive' => $inactive,
+    ]);
+});
+
 // RUTAS PROTEGIDAS (requieren autenticación)
 // -----------------------------------------------------------------
 Route::middleware("auth:sanctum")->group(function () {

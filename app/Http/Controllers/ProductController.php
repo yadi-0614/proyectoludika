@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use App\Models\Category;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -26,8 +28,8 @@ class ProductController extends Controller
         // $products = Product::all();
 
         return view("products.index", [
-            // 'products' => $products,
             "products" => collect(),
+            "categories" => Category::all(),
         ]);
     }
 
@@ -37,19 +39,36 @@ class ProductController extends Controller
     public function welcome(Request $request)
     {
         $search = $request->input('search', '');
+        $category_slug = $request->input('category', '');
 
-        $products = Product::when($search, function ($query) use ($search) {
-            $query->where('name', 'like', $search . '%');
-        })
-            ->paginate(5)
-            ->withQueryString(); // keeps ?search=... in pagination links
+        $query = Product::query();
 
-        return view("welcome-simple", compact('products', 'search'));
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('description', 'like', '%' . $search . '%')
+                  ->orWhereHas('category', function ($cq) use ($search) {
+                      $cq->where('name', 'like', '%' . $search . '%');
+                  });
+            });
+        }
+
+        if ($category_slug) {
+            $query->whereHas('category', function ($q) use ($category_slug) {
+                $q->where('slug', $category_slug);
+            });
+        }
+
+        $products = $query->paginate(8)->withQueryString();
+        $categories = Category::withCount('products')->get();
+
+        return view("welcome-simple", compact('products', 'search', 'categories', 'category_slug'));
     }
 
     public function create(Request $request)
     {
-        return view("products.form");
+        $categories = Category::all();
+        return view("products.form", compact('categories'));
     }
 
     /**
@@ -57,6 +76,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
+        $product->load('reviews.user');
         return view('products.show', compact('product'));
     }
 
@@ -90,7 +110,26 @@ class ProductController extends Controller
                 "name" => "required|string|max:40",
                 "price" => "required|numeric|min:1|max:9999999",
                 "description" => "required|string",
+                "category_id" => "nullable", // Se valida manualmente o se acepta 'new'
+                "new_category" => "required_if:category_id,new|nullable|string|max:255",
             ]);
+
+            if (!empty($validated['new_category'])) {
+                $category = Category::firstOrCreate([
+                    'slug' => Str::slug($validated['new_category'])
+                ], [
+                    'name' => $validated['new_category']
+                ]);
+                $validated['category_id'] = $category->id;
+            }
+
+            // Si se seleccionó 'new' pero no se creó (no debería pasar por validation required_if)
+            // o simplemente limpiar el valor para evitar error de tipo en el modelo
+            if (($validated['category_id'] ?? '') === 'new') {
+                $validated['category_id'] = null;
+            }
+
+            unset($validated['new_category']);
 
             // No agregar imagen al validated array ya que no está validada
             // La procesaremos por separado
@@ -165,10 +204,10 @@ class ProductController extends Controller
 
     public function edit(Request $request, Product $product)
     {
-        //$product = Product::find($product);
-
+        $categories = Category::all();
         return view("products.form", [
             "product" => $product,
+            "categories" => $categories,
         ]);
     }
 
@@ -206,7 +245,7 @@ class ProductController extends Controller
         ]);
 
         // Query base
-        $query = Product::query();
+        $query = Product::with('category');
 
         // Búsqueda en varios campos
         $search = $request->input("search.value");
@@ -258,6 +297,7 @@ class ProductController extends Controller
             return [
                 "image" => $imageHtml,
                 "name" => $product->name,
+                "category" => $product->category ? $product->category->name : '<span class="text-muted">Sin categoría</span>',
                 "description" => $product->description,
                 "price" => '$' . number_format($product->price, 2),
                 "actions" =>

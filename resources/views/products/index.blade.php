@@ -372,14 +372,24 @@
                     <p class="hero-subtitle">Gestión del catálogo de la tienda</p>
                 </div>
             </div>
-            <button class="btn-add" onclick="execute('/productos/agregar')">
-                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="12" y1="5" x2="12" y2="19" />
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                </svg>
-                <span>Agregar producto</span>
-            </button>
+            <div style="display:flex;gap:10px;">
+                <a href="{{ route('categories.index') }}" class="btn-add" style="background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.2);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+                        <line x1="7" y1="7" x2="7.01" y2="7"/>
+                    </svg>
+                    <span>Categorías</span>
+                </a>
+                <button class="btn-add" onclick="execute('/productos/agregar')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                    <span>Agregar producto</span>
+                </button>
+            </div>
         </div>
 
         {{-- Success alert --}}
@@ -401,6 +411,7 @@
                         <tr>
                             <th>Imagen</th>
                             <th>Nombre</th>
+                            <th>Categoría</th>
                             <th>Descripción</th>
                             <th>Precio</th>
                             <th class="text-end">Acciones</th>
@@ -422,6 +433,7 @@
                 columns: [
                     { data: 'image', orderable: false, searchable: false, width: '70px' },
                     { data: 'name' },
+                    { data: 'category' },
                     { data: 'description' },
                     { data: 'price' },
                     { data: 'actions', orderable: false, searchable: false }

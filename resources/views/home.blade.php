@@ -84,6 +84,18 @@
 
                             <div class="product-card__body">
                                 <h5 class="product-card__title">{{ $product->name }}</h5>
+                                <div class="product-card__rating">
+                                    <div class="stars">
+                                        @for($i = 1; $i <= 5; $i++)
+                                            @if($i <= round($product->rating))
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#C9A227" stroke="#C9A227" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                            @else
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ddd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                            @endif
+                                        @endfor
+                                    </div>
+                                    <span class="rating-text">{{ number_format($product->rating, 1) }} ({{ $product->reviews_count }} comentarios)</span>
+                                </div>
                                 <p class="product-card__desc">{{ Str::limit($product->description, 80) }}</p>
                                 <div class="product-card__footer">
                                     <a href="{{ route('product.show', $product->id) }}"
@@ -418,6 +430,24 @@
             color: var(--text-dark);
             margin-bottom: 0.35rem;
             line-height: 1.3;
+        }
+
+        .product-card__rating {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-card__rating .stars {
+            display: flex;
+            gap: 2px;
+        }
+
+        .product-card__rating .rating-text {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
         }
 
         .product-card__desc {

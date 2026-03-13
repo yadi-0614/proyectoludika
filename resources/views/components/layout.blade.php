@@ -167,7 +167,14 @@
                 <div class="dropdown">
                     <a class="x-nav-user dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown"
                         aria-expanded="false">
-                        <img class="x-nav-avatar" src="{{ asset('images/avatar.png') }}" alt="">
+                        @if(Auth::user()->hasAvatar())
+                            <img class="x-nav-avatar" src="{{ Auth::user()->avatar_url }}" alt="{{ Auth::user()->name }}">
+                        @else
+                            <span class="x-nav-avatar"
+                                style="display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1E6F5C,#2C2C2C);color:#fff;font-weight:700;font-size:0.82rem;">
+                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                            </span>
+                        @endif
                         {{ Auth::user()->name }}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end x-dropdown-menu" aria-labelledby="userDropdown">
@@ -180,6 +187,17 @@
                                     <circle cx="12" cy="7" r="4" />
                                 </svg>
                                 Mi Perfil
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ route('categories.index') }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+                                    <line x1="7" y1="7" x2="7.01" y2="7"/>
+                                </svg>
+                                Categorías
                             </a>
                         </li>
                         <li>

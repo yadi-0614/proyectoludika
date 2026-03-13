@@ -217,7 +217,7 @@
                         <input id="password" type="password" name="password"
                                class="form-input {{ $errors->has('password') ? 'is-invalid' : '' }}"
                                required autocomplete="new-password"
-                               placeholder="Mínimo 8 caracteres">
+                               placeholder="Mínimo 8 caracteres, 1 mayúscula y 2 símbolos">
                     </div>
                     @error('password')
                         <span class="invalid-feedback">{{ $message }}</span>

@@ -13,6 +13,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CategoryController;
 
 use App\Http\Controllers\UserController;
 
@@ -110,10 +111,18 @@ Route::middleware(["auth", "security:auth"])->group(function () {
         Route::get("users/data", [UserController::class, "dataTable"])->name(
             "users.data",
         );
+        Route::patch("users/{user}/toggle-active", [UserController::class, "toggleActive"])->name(
+            "users.toggle-active",
+        );
         Route::get("users/{user}/download-avatar", [
             UserController::class,
             "downloadAvatar",
         ])->name("users.download-avatar");
+
+        Route::resource('categories', CategoryController::class);
+
+        Route::delete('/reviews/{review}', [\App\Http\Controllers\ReviewController::class, 'destroy'])->name('reviews.destroy');
     });
 
+    Route::post('/products/{product}/reviews', [\App\Http\Controllers\ReviewController::class, 'store'])->name('products.reviews.store');
 });

@@ -195,6 +195,21 @@
             border-radius: 4px;
             margin-bottom: 18px;
         }
+        .detail-rating {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+        .detail-rating .stars {
+            display: flex;
+            gap: 3px;
+        }
+        .detail-rating .rating-text {
+            color: #777;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
         .detail-desc {
             color: #555;
             font-size: 1rem;
@@ -326,6 +341,90 @@
             .detail-name { font-size: 1.5rem; }
             .detail-img-wrap { min-height: 220px; }
         }
+
+        /* ── REVIEWS SECTION ── */
+        .reviews-section {
+            margin-top: 3rem;
+            background: #fff;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 6px 32px rgba(30,111,92,0.08);
+            border: 1.5px solid #d6ead8;
+        }
+        .reviews-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--negro-bosque);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .review-form {
+            background: #f7faf7;
+            padding: 24px;
+            border-radius: 18px;
+            border: 1.5px solid #d6ead8;
+            margin-bottom: 3rem;
+        }
+        .review-item {
+            padding: 20px 0;
+            border-bottom: 1px solid #eef6ef;
+        }
+        .review-item:last-child { border-bottom: none; }
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .review-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            color: var(--verde-selva);
+        }
+        .review-date {
+            font-size: 0.8rem;
+            color: #888;
+        }
+        .review-stars {
+            display: flex;
+            gap: 2px;
+            margin-bottom: 8px;
+        }
+        .review-text {
+            color: #555;
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+        .no-reviews {
+            text-align: center;
+            padding: 30px;
+            color: #888;
+            font-style: italic;
+        }
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+            gap: 5px;
+        }
+        .star-rating input { display: none; }
+        .star-rating label {
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ddd' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'%3E%3C/polygon%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        .star-rating input:checked ~ label,
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%23C9A227' stroke='%23C9A227' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'%3E%3C/polygon%3E%3C/svg%3E");
+        }
     </style>
 </head>
 <body>
@@ -432,10 +531,22 @@
                                     <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
                                     <line x1="7" y1="7" x2="7.01" y2="7"/>
                                 </svg>
-                                Producto Lúdika
+                                {{ $product->category ? $product->category->name : 'Producto Lúdika' }}
                             </div>
 
-                            <h1 class="detail-name">{{ $product->name }}</h1>
+                             <h1 class="detail-name">{{ $product->name }}</h1>
+                             <div class="detail-rating">
+                                 <div class="stars">
+                                     @for($i = 1; $i <= 5; $i++)
+                                         @if($i <= round($product->rating))
+                                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#C9A227" stroke="#C9A227" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                         @else
+                                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ddd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                         @endif
+                                     @endfor
+                                 </div>
+                                 <span class="rating-text">{{ number_format($product->rating, 1) }} ({{ $product->reviews_count }} comentarios)</span>
+                             </div>
                             <div class="detail-divider"></div>
                             <p class="detail-desc">{{ $product->description }}</p>
 
@@ -511,6 +622,92 @@
                         </div>
                     </div>
 
+                </div>
+            </div>
+
+            {{-- Reviews Section --}}
+            <div class="reviews-section">
+                <h3 class="reviews-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    Reseñas y Comentarios ({{ $product->reviews_count }})
+                </h3>
+
+                @auth
+                    <div class="review-form">
+                        <h5 style="font-weight:700; color:var(--negro-bosque); margin-bottom:15px;">Dejar un comentario</h5>
+                        <form action="{{ route('products.reviews.store', $product->id) }}" method="POST">
+                            @csrf
+                            <div class="mb-3">
+                                <label class="form-label" style="font-weight:600; font-size:0.85rem;">Calificación</label>
+                                <div class="star-rating">
+                                    <input type="radio" id="star5" name="rating" value="5" required/><label for="star5"></label>
+                                    <input type="radio" id="star4" name="rating" value="4"/><label for="star4"></label>
+                                    <input type="radio" id="star3" name="rating" value="3"/><label for="star3"></label>
+                                    <input type="radio" id="star2" name="rating" value="2"/><label for="star2"></label>
+                                    <input type="radio" id="star1" name="rating" value="1"/><label for="star1"></label>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="comment" class="form-label" style="font-weight:600; font-size:0.85rem;">Tu comentario</label>
+                                <textarea class="form-control" name="comment" id="comment" rows="3" placeholder="Cuéntanos qué te pareció este producto..." style="border-radius:12px; border:1.5px solid #d6ead8;"></textarea>
+                            </div>
+                            <button type="submit" class="btn-login" style="width:auto; padding:10px 30px;">Enviar comentario</button>
+                        </form>
+                    </div>
+                @else
+                    <div class="alert alert-info" style="border-radius:15px; border:none; background:#eef6ef; color:var(--verde-selva); font-weight:600;">
+                        Debes <a href="{{ route('login') }}" style="color:var(--verde-selva); text-decoration:underline;">iniciar sesión</a> para dejar un comentario.
+                    </div>
+                @endauth
+
+                <div class="reviews-list">
+                    @forelse($product->reviews as $review)
+                        <div class="review-item">
+                            <div class="review-header">
+                                <div class="review-user">
+                                    @if($review->user->hasAvatar())
+                                        <img src="{{ $review->user->avatar_url }}" style="width:30px; height:30px; border-radius:50%; object-fit:cover;">
+                                    @else
+                                        <div style="width:30px; height:30px; border-radius:50%; background:var(--verde-selva); color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.7rem;">
+                                            {{ strtoupper(substr($review->user->name, 0, 1)) }}
+                                        </div>
+                                    @endif
+                                    {{ $review->user->name }}
+                                </div>
+                                <span class="review-date">{{ $review->created_at->diffForHumans() }}</span>
+                                @if(Auth::check() && Auth::user()->hasRole('admin'))
+                                    <form action="{{ route('reviews.destroy', $review->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este comentario?');" style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-link text-danger p-0 ms-2" title="Eliminar comentario">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="3 6 5 6 21 6"></polyline>
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
+                            <div class="review-stars">
+                                @for($i = 1; $i <= 5; $i++)
+                                    @if($i <= $review->rating)
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#C9A227" stroke="#C9A227" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                    @else
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ddd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                    @endif
+                                @endfor
+                            </div>
+                            <p class="review-text">{{ $review->comment }}</p>
+                        </div>
+                    @empty
+                        <div class="no-reviews">
+                            Aún no hay reseñas para este producto. ¡Sé el primero en comentar!
+                        </div>
+                    @endforelse
                 </div>
             </div>
         </div>

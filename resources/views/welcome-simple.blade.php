@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('content')
 
@@ -44,9 +44,19 @@
                         </svg>
                     </span>
                     <input type="text" name="search" id="search" class="search-bar__input"
-                        placeholder="Buscar producto por nombre..." value="{{ $search }}" autocomplete="off">
-                    @if($search)
-                        <a href="{{ url('/') }}" class="search-bar__clear" title="Limpiar búsqueda">
+                        placeholder="Buscar producto..." value="{{ $search }}" autocomplete="off">
+                    
+                    <select name="category" class="search-bar__select" onchange="this.form.submit()">
+                        <option value="">Todas las categorías</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->slug }}" {{ $category_slug == $category->slug ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    @if($search || $category_slug)
+                        <a href="{{ url('/') }}" class="search-bar__clear" title="Limpiar filtros">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="18" y1="6" x2="6" y2="18" />
@@ -65,6 +75,20 @@
                     </p>
                 @endif
             </form>
+
+            {{-- Category Pills --}}
+            <div class="category-pills">
+                <a href="{{ url('/') }}" class="category-pill {{ !$category_slug ? 'active' : '' }}">
+                    Todos
+                </a>
+                @foreach($categories as $cat)
+                    <a href="{{ url('/?category=' . $cat->slug . ($search ? '&search=' . $search : '')) }}" 
+                       class="category-pill {{ $category_slug == $cat->slug ? 'active' : '' }}">
+                        {{ $cat->name }}
+                        <span class="category-count">{{ $cat->products_count }}</span>
+                    </a>
+                @endforeach
+            </div>
         </div>
 
         {{-- Products Grid --}}
@@ -91,9 +115,24 @@
                                 <div class="product-card__badge">${{ number_format($product->price, 2) }}</div>
                             </div>
 
-                            {{-- Body --}}
+                             {{-- Body --}}
                             <div class="product-card__body">
+                                @if($product->category)
+                                    <span class="product-card__category">{{ $product->category->name }}</span>
+                                @endif
                                 <h5 class="product-card__title">{{ $product->name }}</h5>
+                                <div class="product-card__rating">
+                                    <div class="stars">
+                                        @for($i = 1; $i <= 5; $i++)
+                                            @if($i <= round($product->rating))
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#C9A227" stroke="#C9A227" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                            @else
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ddd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                            @endif
+                                        @endfor
+                                    </div>
+                                    <span class="rating-text">{{ number_format($product->rating, 1) }} ({{ $product->reviews_count }} comentarios)</span>
+                                </div>
                                 <p class="product-card__desc">{{ Str::limit($product->description, 80) }}</p>
                                 <div class="product-card__footer">
                                     @guest
@@ -158,10 +197,10 @@
                     <line x1="16.5" y1="16.5" x2="22" y2="22" />
                 </svg>
                 @if($search)
-                    <p>No se encontraron productos con el nombre <strong>"{{ $search }}"</strong>.</p>
+                    <p>No se encontraron productos, categorías o descripciones que coincidan con <strong>"{{ $search }}"</strong>.</p>
                     <a href="{{ url('/') }}" class="empty-state__link">Ver todos los productos</a>
                 @else
-                    <p>No hay productos disponibles en este momento.</p>
+                    <p>No hay productos disponibles en esta categoría en este momento.</p>
                 @endif
             </div>
         @endif
@@ -380,6 +419,82 @@
             transform: scale(1.03);
         }
 
+        .search-bar__select {
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 0.88rem;
+            color: var(--verde-selva);
+            font-weight: 600;
+            padding: 0 10px;
+            margin: 0 5px;
+            border-left: 1.5px solid #eee;
+            cursor: pointer;
+            flex-shrink: 0;
+            max-width: 140px;
+        }
+
+        .category-pills {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 1.2rem;
+        }
+
+        .category-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.5rem 1.1rem;
+            background: #fff;
+            color: var(--text-muted);
+            border: 1.5px solid #eee;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.25s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .category-pill:hover {
+            border-color: var(--verde-hoja);
+            color: var(--verde-selva);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30,111,92,0.12);
+        }
+
+        .category-pill.active {
+            background: var(--verde-selva);
+            color: #fff;
+            border-color: var(--verde-selva);
+            box-shadow: 0 4px 14px rgba(30,111,92,0.3);
+        }
+
+        .category-count {
+            font-size: 0.7rem;
+            background: rgba(0,0,0,0.06);
+            padding: 1px 6px;
+            border-radius: 10px;
+            color: inherit;
+            opacity: 0.8;
+        }
+
+        .category-pill.active .category-count {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .product-card__category {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--verde-hoja);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.2rem;
+            display: block;
+        }
+
         .search-hint {
             text-align: center;
             font-size: 0.85rem;
@@ -468,6 +583,24 @@
             color: var(--text-dark);
             margin-bottom: 0.35rem;
             line-height: 1.3;
+        }
+
+        .product-card__rating {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-card__rating .stars {
+            display: flex;
+            gap: 2px;
+        }
+
+        .product-card__rating .rating-text {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
         }
 
         .product-card__desc {

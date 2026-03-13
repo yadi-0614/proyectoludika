@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Database\QueryException;
+use Illuminate\Validation\Rules\Password;
 
 class RegisterController extends Controller
 {
@@ -54,7 +55,18 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'confirmed',
+                Password::min(8)
+                    ->mixedCase() // Al menos una mayúscula y una minúscula
+                    ->symbols(),   // Al menos un símbolo
+                'regex:/([^A-Za-z0-9].*){2,}/', // Específicamente requerimos al menos 2 símbolos
+            ],
+        ], [
+            'password.regex' => 'La contraseña debe contener al menos 2 caracteres especiales.',
         ]);
     }
 

@@ -270,13 +270,45 @@
                             class="ctrl {{ $errors->has('name') ? 'is-invalid' : '' }}"
                             value="{{ old('name', $product->name ?? '') }}"
                             placeholder="Ej. Coca-Cola 600ml"
-                            required maxlength="50">
+                            required maxlength="40">
                         @error('name')
                             <span class="error-msg">{{ $message }}</span>
                         @else
                             @if($errors->has('name'))
-                                <span class="error-msg">Campo requerido, máx. 50 caracteres.</span>
+                                <span class="error-msg">Campo requerido, máx. 40 caracteres.</span>
                             @endif
+                        @enderror
+                    </div>
+
+                    {{-- Categoría --}}
+                    <div class="col-sm-12 col-md-6 col-lg-4">
+                        <label class="lbl">Categoría</label>
+                        <select name="category_id" id="category_id" 
+                            class="ctrl {{ $errors->has('category_id') ? 'is-invalid' : '' }}"
+                            onchange="checkCategory(this.value)">
+                            <option value="">Selecciona una categoría</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}" {{ (old('category_id', $product->category_id ?? '') == $category->id) ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                            <option value="new" {{ old('category_id') == 'new' ? 'selected' : '' }}>+ Agregar nueva categoría...</option>
+                        </select>
+                        @error('category_id')
+                            <span class="error-msg">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    {{-- Nueva Categoría (Oculto inicialmente) --}}
+                    <div class="col-sm-12 col-md-6 col-lg-3" id="new_category_group" style="{{ old('category_id') == 'new' ? 'display:block;' : 'display:none;' }}">
+                        <label class="lbl" style="color:var(--dorado)">Nombre de la nueva categoría</label>
+                        <input name="new_category" type="text" id="new_category"
+                            class="ctrl {{ $errors->has('new_category') ? 'is-invalid' : '' }}"
+                            value="{{ old('new_category') }}"
+                            placeholder="Ej. Limpieza, Mascotas..."
+                            {{ old('category_id') == 'new' ? 'required' : '' }}>
+                        @error('new_category')
+                            <span class="error-msg">{{ $message }}</span>
                         @enderror
                     </div>
 
@@ -387,7 +419,22 @@
                 form.classList.add('was-validated');
             }, false);
         });
+
     })();
+
+    // Global function for category toggle
+    function checkCategory(val) {
+        var group = document.getElementById('new_category_group');
+        var input = document.getElementById('new_category');
+        if (val === 'new') {
+            group.style.display = 'block';
+            input.required = true;
+            input.focus();
+        } else {
+            group.style.display = 'none';
+            input.required = false;
+        }
+    }
 </script>
 @stack('scripts')
 @endsection

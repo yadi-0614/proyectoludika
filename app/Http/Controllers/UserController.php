@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
@@ -45,12 +46,32 @@ class UserController extends Controller
             ];
 
             if (!$id) {
-                $rules["password"] = "required|string|min:8|confirmed";
+                $rules["password"] = [
+                    'required',
+                    'string',
+                    'min:8',
+                    'confirmed',
+                    Password::min(8)
+                        ->mixedCase()
+                        ->symbols(),
+                    'regex:/([^A-Za-z0-9].*){2,}/',
+                ];
             } else {
-                $rules["password"] = "nullable|string|min:8|confirmed";
+                $rules["password"] = [
+                    'nullable',
+                    'string',
+                    'min:8',
+                    'confirmed',
+                    Password::min(8)
+                        ->mixedCase()
+                        ->symbols(),
+                    'regex:/([^A-Za-z0-9].*){2,}/',
+                ];
             }
 
-            $validated = $request->validate($rules);
+            $validated = $request->validate($rules, [
+                'password.regex' => 'La contraseña debe contener al menos 2 caracteres especiales.',
+            ]);
 
             if ($id) {
                 // Actualizar usuario existente
@@ -89,6 +110,7 @@ class UserController extends Controller
                     'name' => $validated['name'],
                     'email' => $validated['email'],
                     'password' => Hash::make($validated['password']),
+                    'is_active' => true,
                 ]);
 
                 // Procesar avatar para usuario nuevo
@@ -139,6 +161,21 @@ class UserController extends Controller
             ->with("success", "Usuario eliminado exitosamente!!!");
     }
 
+    /**
+     * Toggle user active/inactive status
+     */
+    public function toggleActive(User $user)
+    {
+        $user->is_active = !$user->is_active;
+        $user->save();
+
+        $status = $user->is_active ? 'activado' : 'desactivado';
+
+        return redirect()
+            ->route("users.index")
+            ->with("success", "Usuario {$status} exitosamente.");
+    }
+
     public function dataTable(Request $request)
     {
         $request->validate([
@@ -163,7 +200,7 @@ class UserController extends Controller
         $filteredRecords = clone $query;
         $recordsFiltered = $filteredRecords->count();
 
-        $columns = ["name", "email", "created_at", "id"];
+        $columns = ["name", "email", "is_active", "created_at", "id"];
         $orderColumn = $request->input("order.0.column", 0);
         $orderDir = $request->input("order.0.dir", "asc");
         $query->orderBy($columns[$orderColumn] ?? "id", $orderDir);
@@ -182,31 +219,49 @@ class UserController extends Controller
                     '<img src="' .
                     asset("storage/" . $user->avatar) .
                     '" alt="' .
-                    $user->name .
-                    '" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">';
+                    e($user->name) .
+                    '" class="user-thumb">';
             } else {
+                $initial = strtoupper(substr($user->name, 0, 1));
                 $avatarHtml =
-                    '<div class="bg-light d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; border-radius: 50%;"><i class="bi bi-person text-muted"></i></div>';
+                    '<div class="user-thumb-placeholder">' . $initial . '</div>';
             }
+
+            // Status badge
+            if ($user->is_active) {
+                $statusHtml = '<span class="status-badge status-active"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Activo</span>';
+            } else {
+                $statusHtml = '<span class="status-badge status-inactive"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Inactivo</span>';
+            }
+
+            // Toggle button
+            $toggleLabel = $user->is_active ? 'Desactivar' : 'Activar';
+            $toggleClass = $user->is_active ? 'btn-toggle-off' : 'btn-toggle-on';
+            $toggleIcon = $user->is_active
+                ? '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+                : '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
 
             return [
                 "avatar" => $avatarHtml,
-                "name" => $user->name,
-                "email" => $user->email,
+                "name" => e($user->name),
+                "email" => e($user->email),
+                "status" => $statusHtml,
                 "created_at" => $user->created_at->format('Y-m-d H:i'),
                 "actions" =>
-                    '
-                    <button class="btn btn-primary btn-sm" onclick="execute(\'/users/' .
-                    $user->id .
-                    '/edit\')">
-                        <i class="bi bi-pencil"></i> <span class="d-none d-sm-inline">Edit</span>
-                    </button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteRecord(\'/users/' .
-                    $user->id .
-                    '\')">
-                        <i class="bi bi-trash"></i> <span class="d-none d-sm-inline">Delete</span>
-                    </button>
-                ',
+                    '<div class="action-btns">
+                        <button class="btn-edit" onclick="execute(\'/users/' . $user->id . '/edit\')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            <span class="d-none d-sm-inline">Editar</span>
+                        </button>
+                        <button class="' . $toggleClass . '" onclick="toggleStatus(\'/users/' . $user->id . '/toggle-active\')">
+                            ' . $toggleIcon . '
+                            <span class="d-none d-sm-inline">' . $toggleLabel . '</span>
+                        </button>
+                        <button class="btn-del" onclick="deleteRecord(\'/users/' . $user->id . '\')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                            <span class="d-none d-sm-inline">Eliminar</span>
+                        </button>
+                    </div>',
             ];
         });
 

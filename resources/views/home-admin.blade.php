@@ -9,11 +9,37 @@
             <h1 class="hero-title">¡Hola, {{ Auth::user()->name }}!</h1>
             <p class="hero-subtitle">Explora nuestra colección de productos exclusivos.</p>
             <div style="margin-top: 1.5rem; display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
-                <a href="#productos-grid" class="hero-btn">
+                <a href="#productos-grid" class="hero-btn"
+                    style="background: linear-gradient(135deg, #1E6F5C, #155a49); color: #fff; border: none; display:inline-flex; align-items:center; gap:6px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7" />
+                        <rect x="14" y="3" width="7" height="7" />
+                        <rect x="14" y="14" width="7" height="7" />
+                        <rect x="3" y="14" width="7" height="7" />
+                    </svg>
                     Ver productos
                 </a>
-                <a href="{{ route('products.index') }}" class="hero-btn">
+                <a href="{{ route('products.index') }}" class="hero-btn"
+                    style="background: linear-gradient(135deg, #69B578, #1E6F5C); color: #fff; border: none; display:inline-flex; align-items:center; gap:6px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <path d="M16 10a4 4 0 0 1-8 0" />
+                    </svg>
                     Ver tabla de productos
+                </a>
+                <a href="{{ route('users.index') }}" class="hero-btn"
+                    style="background: linear-gradient(135deg, #C9A227, #d4a017); color: #fff; border: none; display:inline-flex; align-items:center; gap:6px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                    Gestión de usuarios
                 </a>
             </div>
         </div>
@@ -87,6 +113,18 @@
 
                             <div class="product-card__body">
                                 <h5 class="product-card__title">{{ $product->name }}</h5>
+                                <div class="product-card__rating">
+                                    <div class="stars">
+                                        @for($i = 1; $i <= 5; $i++)
+                                            @if($i <= round($product->rating))
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#C9A227" stroke="#C9A227" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                            @else
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ddd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                            @endif
+                                        @endfor
+                                    </div>
+                                    <span class="rating-text">{{ number_format($product->rating, 1) }} ({{ $product->reviews_count }} comentarios)</span>
+                                </div>
                                 <p class="product-card__desc">{{ Str::limit($product->description, 80) }}</p>
                                 <div class="product-card__footer">
                                     <a href="{{ route('product.show', $product->id) }}"
@@ -100,7 +138,7 @@
                                         Ver producto
                                     </a>
                                     <button type="button" class="product-card__cart-btn" title="Añadir al carrito"
-                                        onclick="addToCart({{ $product->id }}, this, '{{ addslashes($product->name) }}', {{ $product->price }})">
+                                        onclick="addToCart({{ $product->id }}, this, &quot;{{ addslashes($product->name) }}&quot;, {{ $product->price }})">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
                                             fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
                                             stroke-linejoin="round">
@@ -423,6 +461,24 @@
             line-height: 1.3;
         }
 
+        .product-card__rating {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-card__rating .stars {
+            display: flex;
+            gap: 2px;
+        }
+
+        .product-card__rating .rating-text {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
         .product-card__desc {
             font-size: 0.8rem;
             color: var(--text-muted);
@@ -601,4 +657,3 @@
         }
     </style>
 @endpush
-

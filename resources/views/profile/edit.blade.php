@@ -158,7 +158,7 @@
                                                   border-radius:12px;font-size:0.95rem;outline:none;
                                                   background:#f7faf7;transition:border-color .2s;box-sizing:border-box;"
                             onfocus="this.style.borderColor='#1E6F5C'" onblur="this.style.borderColor='#b5d9bc'"
-                            placeholder="Mínimo 8 caracteres">
+                            placeholder="Mínimo 8 caracteres, 1 mayúscula y 2 símbolos">
                         @error('new_password')
                             <p style="color:#1E6F5C;font-size:0.78rem;margin:4px 0 0;">{{ $message }}</p>
                         @enderror
