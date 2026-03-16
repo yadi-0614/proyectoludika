@@ -149,6 +149,20 @@ class UserController extends Controller
 
     public function destroy(Request $request, User $user)
     {
+        // Prevenir que el usuario se elimine a sí mismo
+        if (\Illuminate\Support\Facades\Auth::id() === $user->id) {
+            return redirect()
+                ->route("users.index")
+                ->with("error", "No puedes eliminar tu propia cuenta mientras tienes la sesión iniciada.");
+        }
+
+        // Prevenir eliminar al administrador principal
+        if ($user->id === 2) {
+            return redirect()
+                ->route("users.index")
+                ->with("error", "El administrador principal no puede ser eliminado.");
+        }
+
         // Eliminar avatar si existe
         if ($user->avatar) {
             $this->fileService->delete($user->avatar);
@@ -166,6 +180,20 @@ class UserController extends Controller
      */
     public function toggleActive(User $user)
     {
+        // Prevenir que el usuario se desactive a sí mismo
+        if (\Illuminate\Support\Facades\Auth::id() === $user->id) {
+            return redirect()
+                ->route("users.index")
+                ->with("error", "No puedes desactivar tu propia cuenta mientras tienes la sesión iniciada.");
+        }
+
+        // Prevenir desactivar al administrador principal
+        if ($user->id === 2) {
+            return redirect()
+                ->route("users.index")
+                ->with("error", "El administrador principal no puede ser desactivado.");
+        }
+
         $user->is_active = !$user->is_active;
         $user->save();
 
@@ -209,7 +237,7 @@ class UserController extends Controller
         $length = $request->input("length", 10);
         $data = $query->skip($start)->take($length)->get();
 
-        $data = $data->map(function ($user) {
+        $data = $data->map(function (User $user) {
             $avatarHtml = "";
             if (
                 $user->avatar &&
@@ -234,34 +262,65 @@ class UserController extends Controller
                 $statusHtml = '<span class="status-badge status-inactive"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Inactivo</span>';
             }
 
-            // Toggle button
+            // Action buttons
+            $isCurrentUser = \Illuminate\Support\Facades\Auth::id() === $user->id;
+            $isPrincipalAdmin = $user->id === 2;
+
             $toggleLabel = $user->is_active ? 'Desactivar' : 'Activar';
             $toggleClass = $user->is_active ? 'btn-toggle-off' : 'btn-toggle-on';
             $toggleIcon = $user->is_active
                 ? '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
                 : '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
 
+            if ($isCurrentUser) {
+                // Si es el usuario actual, le mostramos solo el botón de editar (perfil) o un texto inofensivo.
+                $actionsHtml = '<div class="action-btns" style="justify-content: flex-end; opacity: 0.6;">
+                    <span style="font-size: 0.8rem; font-weight: 600; color: #888; padding: 7px;">(Tú)</span>
+                    <button class="btn-edit" onclick="execute(\'/users/' . $user->id . '/edit\')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        <span class="d-none d-sm-inline">Editar</span>
+                    </button>
+                </div>';
+            } elseif ($isPrincipalAdmin) {
+                // Si es el administrador principal, no se puede eliminar ni desactivar, sólo editar.
+                $actionsHtml = '<div class="action-btns" style="justify-content: flex-end; opacity: 0.6;">
+                    <span style="font-size: 0.8rem; font-weight: 600; color: #888; padding: 7px;" title="Admin Principal"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+                    <button class="btn-edit" onclick="execute(\'/users/' . $user->id . '/edit\')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        <span class="d-none d-sm-inline">Editar</span>
+                    </button>
+                </div>';
+            } else {
+                $actionsHtml = '<div class="action-btns">
+                    <button class="btn-edit" onclick="execute(\'/users/' . $user->id . '/edit\')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        <span class="d-none d-sm-inline">Editar</span>
+                    </button>
+                    <button class="' . $toggleClass . '" onclick="toggleStatus(\'/users/' . $user->id . '/toggle-active\')">
+                        ' . $toggleIcon . '
+                        <span class="d-none d-sm-inline">' . $toggleLabel . '</span>
+                    </button>
+                    <button class="btn-del" onclick="deleteRecord(\'/users/' . $user->id . '\')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        <span class="d-none d-sm-inline">Eliminar</span>
+                    </button>
+                </div>';
+            }
+
+            // Role badge
+            $isAdmin = $user->hasRole('admin');
+            $roleHtml = $isAdmin 
+                ? '<span class="status-badge" style="background: rgba(30, 111, 92, 0.12); color: var(--verde-selva); border: 1.5px solid rgba(30, 111, 92, 0.3);"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:2px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Admin</span>'
+                : '<span class="status-badge" style="background: #f7faf7; color: #888; border: 1.5px solid #d6ead8;"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:2px"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Cliente</span>';
+
             return [
                 "avatar" => $avatarHtml,
                 "name" => e($user->name),
                 "email" => e($user->email),
+                "role" => $roleHtml,
                 "status" => $statusHtml,
                 "created_at" => $user->created_at->format('Y-m-d H:i'),
-                "actions" =>
-                    '<div class="action-btns">
-                        <button class="btn-edit" onclick="execute(\'/users/' . $user->id . '/edit\')">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                            <span class="d-none d-sm-inline">Editar</span>
-                        </button>
-                        <button class="' . $toggleClass . '" onclick="toggleStatus(\'/users/' . $user->id . '/toggle-active\')">
-                            ' . $toggleIcon . '
-                            <span class="d-none d-sm-inline">' . $toggleLabel . '</span>
-                        </button>
-                        <button class="btn-del" onclick="deleteRecord(\'/users/' . $user->id . '\')">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                            <span class="d-none d-sm-inline">Eliminar</span>
-                        </button>
-                    </div>',
+                "actions" => $actionsHtml,
             ];
         });
 

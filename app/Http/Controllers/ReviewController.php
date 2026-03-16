@@ -14,6 +14,8 @@ class ReviewController extends Controller
         $request->validate([
             'rating' => 'required|integer|min:1|max:5',
             'comment' => 'nullable|string|max:1000',
+        ], [
+            'rating.required' => 'Debes de seleccionar una calificación para poder poner tu comentario.',
         ]);
 
         $product->reviews()->create([

@@ -455,10 +455,15 @@
                         Inicio
                     </a>
                     <span style="color:rgba(255,255,255,0.7);font-size:0.87rem;font-weight:600;display:flex;align-items:center;gap:6px;">
-                        <img src="{{ asset('storage/'.Auth::user()->avatar ?? 'images/avatar.png') }}"
-                            class="nav-avatar"
-                            onerror="this.src='{{ asset('images/avatar.png') }}'"
-                            alt="">
+                        @if(Auth::user()->hasAvatar())
+                            <img src="{{ Auth::user()->avatar_url }}"
+                                class="nav-avatar"
+                                alt="{{ Auth::user()->name }}">
+                        @else
+                            <div class="nav-avatar" style="background:rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;color:#fff;">
+                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                            </div>
+                        @endif
                         {{ Auth::user()->name }}
                     </span>
                 @else
@@ -626,7 +631,7 @@
             </div>
 
             {{-- Reviews Section --}}
-            <div class="reviews-section">
+            <div class="reviews-section" id="reviews-section">
                 <h3 class="reviews-title">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
@@ -642,16 +647,19 @@
                             <div class="mb-3">
                                 <label class="form-label" style="font-weight:600; font-size:0.85rem;">Calificación</label>
                                 <div class="star-rating">
-                                    <input type="radio" id="star5" name="rating" value="5" required/><label for="star5"></label>
+                                    <input type="radio" id="star5" name="rating" value="5"/><label for="star5"></label>
                                     <input type="radio" id="star4" name="rating" value="4"/><label for="star4"></label>
                                     <input type="radio" id="star3" name="rating" value="3"/><label for="star3"></label>
                                     <input type="radio" id="star2" name="rating" value="2"/><label for="star2"></label>
                                     <input type="radio" id="star1" name="rating" value="1"/><label for="star1"></label>
                                 </div>
+                                @error('rating')
+                                    <div style="color: #c0392b; font-size: 0.8rem; font-weight: 600; margin-top: 5px;">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="mb-3">
                                 <label for="comment" class="form-label" style="font-weight:600; font-size:0.85rem;">Tu comentario</label>
-                                <textarea class="form-control" name="comment" id="comment" rows="3" placeholder="Cuéntanos qué te pareció este producto..." style="border-radius:12px; border:1.5px solid #d6ead8;"></textarea>
+                                <textarea class="form-control" name="comment" id="comment" rows="3" placeholder="Cuéntanos qué te pareció este producto..." style="border-radius:12px; border:1.5px solid #d6ead8;">{{ old('comment') }}</textarea>
                             </div>
                             <button type="submit" class="btn-login" style="width:auto; padding:10px 30px;">Enviar comentario</button>
                         </form>
@@ -721,5 +729,16 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            @if($errors->has('rating') || $errors->has('comment') || session('success'))
+                var reviewsSection = document.getElementById('reviews-section');
+                if(reviewsSection) {
+                    reviewsSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            @endif
+        });
+    </script>
 </body>
 </html>

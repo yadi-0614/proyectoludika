@@ -10,10 +10,20 @@
         <div class="row my-4 mx-1">
             <div class="d-flex justify-content-between align-items-center">
                 <h1 class="mb-0">Empresas</h1>
-                <button class="btn btn-primary btn-sm" onclick="window.location.href='{{ route('companies.create') }}'">
-                    <i class="bi bi-plus"></i>
-                    <span class="d-none d-sm-inline">Agregar</span>
-                </button>
+                <div style="display:flex;gap:8px;">
+                    <a href="{{ route('home') }}" class="btn btn-secondary btn-sm" title="Ir al inicio">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                            <polyline points="9 22 9 12 15 12 15 22"/>
+                        </svg>
+                        <span class="d-none d-sm-inline ms-1">Inicio</span>
+                    </a>
+                    <button class="btn btn-primary btn-sm" onclick="window.location.href='{{ route('companies.create') }}'">
+                        <i class="bi bi-plus"></i>
+                        <span class="d-none d-sm-inline">Agregar</span>
+                    </button>
+                </div>
             </div>
         </div>
 

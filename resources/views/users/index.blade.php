@@ -524,16 +524,26 @@
                     <p class="hero-subtitle">Gestión de cuentas de usuario del sistema</p>
                 </div>
             </div>
-            <button class="btn-add" onclick="execute('/users/create')">
-                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                    <circle cx="8.5" cy="7" r="4" />
-                    <line x1="20" y1="8" x2="20" y2="14" />
-                    <line x1="23" y1="11" x2="17" y2="11" />
-                </svg>
-                <span>Agregar usuario</span>
-            </button>
+            <div style="display:flex;gap:10px;align-items:center;">
+                <a href="{{ route('home') }}" class="btn-add" style="background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.2);" title="Ir al inicio">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                        <polyline points="9 22 9 12 15 12 15 22"/>
+                    </svg>
+                    <span>Inicio</span>
+                </a>
+                <button class="btn-add" onclick="execute('/users/create')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="8.5" cy="7" r="4" />
+                        <line x1="20" y1="8" x2="20" y2="14" />
+                        <line x1="23" y1="11" x2="17" y2="11" />
+                    </svg>
+                    <span>Agregar usuario</span>
+                </button>
+            </div>
         </div>
 
         {{-- Success/Error alert --}}
@@ -612,6 +622,7 @@
                             <th>Avatar</th>
                             <th>Nombre</th>
                             <th>Email</th>
+                            <th class="text-center">Rol</th>
                             <th>Estado</th>
                             <th>Fecha Registro</th>
                             <th class="text-end">Acciones</th>
@@ -642,6 +653,7 @@
                     { data: 'avatar', orderable: false, searchable: false, width: '60px' },
                     { data: 'name' },
                     { data: 'email' },
+                    { data: 'role', orderable: false, searchable: false, className: 'text-center' },
                     { data: 'status', orderable: true, searchable: false, width: '100px' },
                     { data: 'created_at' },
                     { data: 'actions', orderable: false, searchable: false }

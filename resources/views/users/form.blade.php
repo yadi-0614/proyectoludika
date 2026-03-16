@@ -191,6 +191,31 @@
                 transform: scale(1.02);
             }
 
+            .pw-wrap {
+                position: relative;
+            }
+
+            .pw-wrap .form-control {
+                padding-right: 44px;
+            }
+
+            .pw-toggle {
+                position: absolute;
+                right: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: none;
+                border: none;
+                color: #888;
+                cursor: pointer;
+                padding: 4px;
+                display: flex;
+                align-items: center;
+                transition: color .2s;
+            }
+
+            .pw-toggle:hover { color: #1E6F5C; }
+
             .form-actions {
                 display: flex;
                 gap: 12px;
@@ -325,10 +350,17 @@
 
                 <div class="col-md-6">
                     <label for="password" class="form-label">Contraseña {{ isset($user) ? '(Dejar en blanco para mantener actual)' : '' }}</label>
-                    <input name="password" type="password"
-                        class="form-control {{ $errors->has('password')? 'is-invalid' : ''}}" id="password"
-                        {{ !isset($user) ? 'required' : '' }} minlength="8"
-                        placeholder="Mínimo 8 caracteres, 1 mayúscula y 2 símbolos">
+                    <div class="pw-wrap">
+                        <input name="password" type="password"
+                            class="form-control {{ $errors->has('password')? 'is-invalid' : ''}}" id="password"
+                            {{ !isset($user) ? 'required' : '' }} minlength="8"
+                            placeholder="Mínimo 8 caracteres, 1 mayúscula y 2 símbolos">
+                        <button type="button" class="pw-toggle" onclick="togglePw('password', this)" tabindex="-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
                     <div class="invalid-feedback">
                         {{ isset($errors) && $errors->has('password') ? $errors->first('password') : 'Mínimo 8 caracteres.' }}
                     </div>
@@ -336,10 +368,17 @@
 
                 <div class="col-md-6">
                     <label for="password_confirmation" class="form-label">Confirmar Contraseña</label>
-                    <input name="password_confirmation" type="password"
-                        class="form-control" id="password_confirmation"
-                        {{ !isset($user) ? 'required' : '' }} minlength="8"
-                        placeholder="Repetir contraseña">
+                    <div class="pw-wrap">
+                        <input name="password_confirmation" type="password"
+                            class="form-control" id="password_confirmation"
+                            {{ !isset($user) ? 'required' : '' }} minlength="8"
+                            placeholder="Repetir contraseña">
+                        <button type="button" class="pw-toggle" onclick="togglePw('password_confirmation', this)" tabindex="-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 {{-- Avatar Section --}}
@@ -400,6 +439,20 @@
 
     @section('js')
         <script>
+            function togglePw(inputId, btn) {
+                var input = document.getElementById(inputId);
+                var svg = btn.querySelector('svg');
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    svg.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
+                    btn.style.color = '#1E6F5C';
+                } else {
+                    input.type = 'password';
+                    svg.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+                    btn.style.color = '#888';
+                }
+            }
+
             (function() {
                 'use strict';
                 var forms = document.querySelectorAll('.needs-validation');

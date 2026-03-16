@@ -1,6 +1,60 @@
 <x-layout>
-    <div class="container">
-        <h1>{{ isset($company) ? 'Editar' : 'Agregar' }} Empresa</h1>
+    <style>
+        .form-hero-simple {
+            background: linear-gradient(135deg, #2C2C2C 0%, #1E6F5C 100%);
+            border-radius: 20px;
+            padding: 24px 30px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 8px 30px rgba(30,111,92,0.25);
+        }
+        .form-hero-simple h1 {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin: 0;
+        }
+        .form-hero-simple p {
+            color: rgba(255,255,255,0.72);
+            font-size: 0.84rem;
+            margin: 2px 0 0;
+        }
+        .btn-back-simple {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.18);
+            border: 1.5px solid rgba(255,255,255,0.4);
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.9rem;
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: background .2s, transform .15s;
+            flex-shrink: 0;
+        }
+        .btn-back-simple:hover { background: rgba(255,255,255,0.28); color: #fff; transform: scale(1.04); }
+    </style>
+
+    <div class="container" style="padding-top: 2rem; padding-bottom: 3rem;">
+
+        {{-- Hero header --}}
+        <div class="form-hero-simple">
+            <div>
+                <h1>{{ isset($company) ? 'Editar' : 'Agregar' }} Empresa</h1>
+                <p>{{ isset($company) ? 'Modifica la información de la empresa' : 'Registra una nueva empresa en el sistema' }}</p>
+            </div>
+            <a href="javascript:history.back()" class="btn-back-simple">
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+                </svg>
+                Regresar
+            </a>
+        </div>
 
         <form method="POST" action={{ url('/companies') }} 
             class="row g-3 needs-validation" novalidate>

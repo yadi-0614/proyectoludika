@@ -27,6 +27,7 @@
         margin-bottom: 28px;
         display: flex;
         align-items: center;
+        justify-content: space-between;
         gap: 16px;
         box-shadow: 0 8px 30px rgba(30,111,92,0.25);
         position: relative;
@@ -214,6 +215,32 @@
         border-color: var(--verde-selva);
     }
 
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.18);
+        border: 1.5px solid rgba(255, 255, 255, 0.4);
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.92rem;
+        padding: 10px 22px;
+        border-radius: 50px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background .2s, transform .15s;
+        position: relative;
+        z-index: 1;
+        backdrop-filter: blur(4px);
+        flex-shrink: 0;
+    }
+
+    .btn-back:hover {
+        background: rgba(255, 255, 255, 0.28);
+        color: #fff;
+        transform: scale(1.04);
+    }
+
     /* ── Alert ── */
     .alert-ludika {
         background: linear-gradient(135deg, var(--verde-selva), var(--negro-bosque));
@@ -251,6 +278,13 @@
             <h1>{{ isset($product) ? 'Editar producto' : 'Agregar producto' }}</h1>
             <p>{{ isset($product) ? 'Actualiza la información del producto' : 'Registra un nuevo producto en el catálogo' }}</p>
         </div>
+        <a href="{{ route('products.index') }}" class="btn-back">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+            </svg>
+            Regresar
+        </a>
     </div>
 
     {{-- Form card --}}

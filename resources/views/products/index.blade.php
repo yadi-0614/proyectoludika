@@ -373,6 +373,14 @@
                 </div>
             </div>
             <div style="display:flex;gap:10px;">
+                <a href="{{ route('home') }}" class="btn-add" style="background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.2);" title="Ir al inicio">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                        <polyline points="9 22 9 12 15 12 15 22"/>
+                    </svg>
+                    <span>Inicio</span>
+                </a>
                 <a href="{{ route('categories.index') }}" class="btn-add" style="background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.2);">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">

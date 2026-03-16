@@ -55,6 +55,7 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'captcha' => ['required', 'captcha'],
             'password' => [
                 'required',
                 'string',
@@ -67,6 +68,8 @@ class RegisterController extends Controller
             ],
         ], [
             'password.regex' => 'La contraseña debe contener al menos 2 caracteres especiales.',
+            'captcha.required' => 'Por favor, completa el captcha.',
+            'captcha.captcha' => 'El captcha ingresado es incorrecto.',
         ]);
     }
 
@@ -93,7 +96,13 @@ class RegisterController extends Controller
      */
     public function register(Request $request)
     {
-        $this->validator($request->all())->validate();
+        $validator = $this->validator($request->all());
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput($request->all());
+        }
 
         try {
             event(new Registered($user = $this->create($request->all())));
