@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('content')
 
@@ -108,7 +108,7 @@
                                         </svg>
                                     </div>
                                 @endif
-                                <div class="product-card__badge">${{ number_format($product->price, 2) }}</div>
+                                <div class="product-card__badge">MXN ${{ number_format($product->price, 2) }}</div>
                             </div>
 
                             <div class="product-card__body">

@@ -15,7 +15,7 @@ class Product extends Model
      *
      * @var array
      */
-    protected $fillable = ["name", "description", "price", "image", "rating", "reviews_count", "category_id"];
+    protected $fillable = ["name", "description", "price", "image", "rating", "reviews_count", "category_id", "stock"];
 
     /**
      * Get the attributes that should be cast.

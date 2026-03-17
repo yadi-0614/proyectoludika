@@ -237,7 +237,7 @@
         background: linear-gradient(90deg, #2C2C2C 0%, #1E6F5C 50%, #2C2C2C 100%);
         border-top: 2px solid rgba(105,181,120,0.35);
         box-shadow: 0 -2px 20px rgba(0,0,0,0.25);
-        padding: 28px 0 18px;
+        padding: 20px 0 12px;
         margin-top: 40px;
         font-family: 'Segoe UI', system-ui, sans-serif;
     ">

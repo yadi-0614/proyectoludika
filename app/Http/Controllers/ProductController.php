@@ -109,6 +109,7 @@ class ProductController extends Controller
             $validated = $request->validate([
                 "name" => "required|string|max:40",
                 "price" => "required|numeric|min:1|max:9999999",
+                "stock" => "required|integer|min:0",
                 "description" => "required|string",
                 "category_id" => "nullable", // Se valida manualmente o se acepta 'new'
                 "new_category" => "required_if:category_id,new|nullable|string|max:255",
@@ -265,7 +266,7 @@ class ProductController extends Controller
         $recordsFiltered = $filteredRecords->count();
 
         // get y set Ordenación (columna y dirección)
-        $columns = ["name", "description", "price", "id"]; // Orden de columnas en tabla
+        $columns = ["name", "description", "price", "stock", "id"]; // Orden de columnas en tabla
         $orderColumn = $request->input("order.0.column", 0);
         $orderDir = $request->input("order.0.dir", "asc");
         $query->orderBy($columns[$orderColumn] ?? "id", $orderDir);
@@ -300,6 +301,7 @@ class ProductController extends Controller
                 "category" => $product->category ? $product->category->name : '<span class="text-muted">Sin categoría</span>',
                 "description" => $product->description,
                 "price" => '$' . number_format($product->price, 2),
+                "stock" => $product->stock,
                 "actions" =>
                     '
                     <button class="btn btn-primary btn-sm" onclick="execute(\'/products/' .

@@ -347,7 +347,7 @@
                     </div>
 
                     {{-- Precio --}}
-                    <div class="col-sm-8 col-md-5 col-lg-3">
+                    <div class="col-sm-6 col-md-5 col-lg-3">
                         <label class="lbl">Precio</label>
                         <div class="price-group {{ $errors->has('price') ? 'is-invalid' : '' }}">
                             <span class="price-prefix">$</span>
@@ -358,6 +358,19 @@
                                 required>
                         </div>
                         @error('price')
+                            <span class="error-msg">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    {{-- Stock --}}
+                    <div class="col-sm-6 col-md-5 col-lg-2">
+                        <label class="lbl">Stock</label>
+                        <input name="stock" type="number" min="0" step="1"
+                            class="ctrl {{ $errors->has('stock') ? 'is-invalid' : '' }}"
+                            value="{{ old('stock', $product->stock ?? 0) }}"
+                            placeholder="0"
+                            required>
+                        @error('stock')
                             <span class="error-msg">{{ $message }}</span>
                         @enderror
                     </div>

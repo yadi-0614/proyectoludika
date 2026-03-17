@@ -64,4 +64,14 @@ class User extends Authenticatable
         return !empty($this->avatar) &&
             \Illuminate\Support\Facades\Storage::disk("public")->exists($this->avatar);
     }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function getHasPurchasesAttribute(): bool
+    {
+        return $this->orders()->exists();
+    }
 }

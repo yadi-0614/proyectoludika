@@ -96,7 +96,7 @@
                                 {{-- Info --}}
                                 <div class="cart-item__info">
                                     <p class="cart-item__name">{{ $item['name'] }}</p>
-                                    <p class="cart-item__price">${{ number_format($item['price'], 2) }} c/u</p>
+                                    <p class="cart-item__price">MXN ${{ number_format($item['price'], 2) }} c/u</p>
                                 </div>
 
                                 {{-- Qty controls --}}
@@ -116,7 +116,7 @@
 
                                 {{-- Subtotal --}}
                                 <div class="cart-item__subtotal" id="subtotal-{{ $item['id'] }}">
-                                    ${{ number_format($item['subtotal'], 2) }}
+                                    MXN ${{ number_format($item['subtotal'], 2) }}
                                 </div>
 
                                 {{-- Remove --}}
@@ -152,7 +152,7 @@
 
                     <div class="cart-summary__row">
                         <span>Subtotal</span>
-                        <span id="summary-subtotal">${{ number_format($total, 2) }}</span>
+                        <span id="summary-subtotal">MXN ${{ number_format($total, 2) }}</span>
                     </div>
                     <div class="cart-summary__row">
                         <span>Envío</span>
@@ -161,7 +161,7 @@
                     <div class="cart-summary__divider"></div>
                     <div class="cart-summary__row cart-summary__row--total">
                         <span>Total</span>
-                        <span id="summary-total">${{ number_format($total, 2) }}</span>
+                        <span id="summary-total">MXN ${{ number_format($total, 2) }}</span>
                     </div>
 
                     <form id="checkout-form" action="{{ route('cart.checkout') }}" method="POST">
@@ -644,7 +644,7 @@
     const CSRF = document.querySelector('meta[name="csrf-token"]').content;
 
     function formatMoney(v) {
-        return '$' + parseFloat(v).toFixed(2);
+        return 'MXN $' + parseFloat(v).toFixed(2);
     }
 
     function updateGlobalBadge(count) {
@@ -730,23 +730,26 @@
     }
 
     /* ---- CLEAR CART ---- */
-    document.getElementById('btn-clear-cart') && document.getElementById('btn-clear-cart').addEventListener('click', function () {
-        if (!confirm('¿Estás segura de que deseas vaciar el carrito?')) return;
+    const btnClear = document.getElementById('btn-clear-cart');
+    if (btnClear) {
+        btnClear.addEventListener('click', function () {
+            if (!confirm('¿Estás seguro de que deseas vaciar el carrito?')) return;
 
-        fetch('/cart/clear', {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': CSRF,
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(r => r.json())
-        .then(data => {
-            updateGlobalBadge(0);
-            location.reload();
-        })
-        .catch(() => {});
-    });
+            fetch('/cart/clear', {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': CSRF,
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(r => r.json())
+            .then(data => {
+                updateGlobalBadge(0);
+                location.reload();
+            })
+            .catch(() => {});
+        });
+    }
 
     /* ---- CHECKOUT BUTTON ---- */
     var checkoutForm = document.getElementById('checkout-form');

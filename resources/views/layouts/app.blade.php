@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
@@ -944,17 +944,17 @@
         <footer style="
             background: linear-gradient(90deg, #0d1f18 0%, #1E6F5C 50%, #0d1f18 100%);
             border-top: 2px solid rgba(105,181,120,0.30);
-            padding: 48px 0 0;
+            padding: 32px 0 0;
             margin-top: auto;
         ">
             <div class="container">
                 <div
-                    style="display:flex; flex-wrap:wrap; gap:40px; justify-content:space-between; padding-bottom:36px;">
+                    style="display:flex; flex-wrap:wrap; gap:30px; justify-content:space-between; padding-bottom:24px;">
 
                     {{-- Brand column --}}
                     <div style="min-width:220px; flex:1 1 220px; max-width:280px;">
                         <a href="{{ url('/') }}"
-                            style="display:inline-flex; align-items:center; gap:10px; text-decoration:none; margin-bottom:14px;">
+                            style="display:inline-flex; align-items:center; gap:8px; text-decoration:none; margin-bottom:10px;">
                             <img src="{{ asset('images/logo-dice-v2.png') }}" alt="Lúdika"
                                 style="height:40px; width:auto; object-fit:contain; border-radius:8px; flex-shrink:0;">
                             <span
@@ -966,104 +966,39 @@
                         </p>
                     </div>
 
-                    {{-- Quick links --}}
-                    <div style="min-width:140px; flex:1 1 140px;">
-                        <h6
-                            style="color:#C9A227; font-size:0.78rem; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; margin-bottom:16px;">
-                            Navegación</h6>
-                        <ul
-                            style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px;">
-                            <li>
-                                <a href="{{ url('/') }}"
-                                    style="color:rgba(255,255,255,0.70); font-size:0.875rem; text-decoration:none; transition:color 0.2s;"
-                                    onmouseover="this.style.color='#69B578'"
-                                    onmouseout="this.style.color='rgba(255,255,255,0.70)'">
-                                    Inicio
-                                </a>
-                            </li>
-                            @auth
-                                <li>
-                                    <a href="{{ route('home') }}"
-                                        style="color:rgba(255,255,255,0.70); font-size:0.875rem; text-decoration:none; transition:color 0.2s;"
-                                        onmouseover="this.style.color='#69B578'"
-                                        onmouseout="this.style.color='rgba(255,255,255,0.70)'">
-                                        Tienda
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('cart.index') }}"
-                                        style="color:rgba(255,255,255,0.70); font-size:0.875rem; text-decoration:none; transition:color 0.2s;"
-                                        onmouseover="this.style.color='#69B578'"
-                                        onmouseout="this.style.color='rgba(255,255,255,0.70)'">
-                                        Mi carrito
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('profile.edit') }}"
-                                        style="color:rgba(255,255,255,0.70); font-size:0.875rem; text-decoration:none; transition:color 0.2s;"
-                                        onmouseover="this.style.color='#69B578'"
-                                        onmouseout="this.style.color='rgba(255,255,255,0.70)'">
-                                        Mi perfil
-                                    </a>
-                                </li>
-                            @else
-                                <li>
-                                    <a href="{{ route('login') }}"
-                                        style="color:rgba(255,255,255,0.70); font-size:0.875rem; text-decoration:none; transition:color 0.2s;"
-                                        onmouseover="this.style.color='#69B578'"
-                                        onmouseout="this.style.color='rgba(255,255,255,0.70)'">
-                                        Iniciar sesión
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('register') }}"
-                                        style="color:rgba(255,255,255,0.70); font-size:0.875rem; text-decoration:none; transition:color 0.2s;"
-                                        onmouseover="this.style.color='#69B578'"
-                                        onmouseout="this.style.color='rgba(255,255,255,0.70)'">
-                                        Crear cuenta
-                                    </a>
-                                </li>
-                            @endauth
-                        </ul>
-                    </div>
-
-                    {{-- Contact / Info --}}
+                    {{-- Social Media column --}}
                     <div style="min-width:180px; flex:1 1 180px;">
                         <h6
                             style="color:#C9A227; font-size:0.78rem; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; margin-bottom:16px;">
-                            Contacto</h6>
+                            Redes Sociales</h6>
                         <ul
                             style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:12px;">
-                            <li
-                                style="display:flex; align-items:flex-start; gap:9px; color:rgba(255,255,255,0.65); font-size:0.85rem;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
-                                    fill="none" stroke="#69B578" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;">
-                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                                    <circle cx="12" cy="10" r="3" />
-                                </svg>
-                                México
+                            <li>
+                                <a href="https://www.facebook.com/nuestraludika" target="_blank"
+                                    style="display:flex; align-items:center; gap:9px; color:rgba(255,255,255,0.65); font-size:0.85rem; text-decoration:none; transition:color 0.2s;"
+                                    onmouseover="this.style.color='#69B578'"
+                                    onmouseout="this.style.color='rgba(255,255,255,0.65)'">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                                    Facebook: Lúdika
+                                </a>
                             </li>
-                            <li
-                                style="display:flex; align-items:flex-start; gap:9px; color:rgba(255,255,255,0.65); font-size:0.85rem;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
-                                    fill="none" stroke="#69B578" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;">
-                                    <path
-                                        d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                                    <polyline points="22,6 12,13 2,6" />
-                                </svg>
-                                juegosludika5@gmail.com
+                            <li>
+                                <a href="https://www.instagram.com/ludika.2020" target="_blank"
+                                    style="display:flex; align-items:center; gap:9px; color:rgba(255,255,255,0.65); font-size:0.85rem; text-decoration:none; transition:color 0.2s;"
+                                    onmouseover="this.style.color='#69B578'"
+                                    onmouseout="this.style.color='rgba(255,255,255,0.65)'">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                                    Instagram: ludika.2020
+                                </a>
                             </li>
-                            <li
-                                style="display:flex; align-items:flex-start; gap:9px; color:rgba(255,255,255,0.65); font-size:0.85rem;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
-                                    fill="none" stroke="#69B578" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;">
-                                    <path
-                                        d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.56 2 2 0 0 1 3.56 1.36h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9.1a16 16 0 0 0 6 6l1.01-.9a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21.73 16.92z" />
-                                </svg>
-                                +52 (55) 0000-0000
+                            <li>
+                                <a href="https://www.tiktok.com/@_juegosludika" target="_blank"
+                                    style="display:flex; align-items:center; gap:9px; color:rgba(255,255,255,0.65); font-size:0.85rem; text-decoration:none; transition:color 0.2s;"
+                                    onmouseover="this.style.color='#69B578'"
+                                    onmouseout="this.style.color='rgba(255,255,255,0.65)'">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
+                                    TikTok: @_juegosludika
+                                </a>
                             </li>
                         </ul>
                     </div>
@@ -1072,7 +1007,7 @@
                 {{-- Bottom bar --}}
                 <div style="
                     border-top: 1px solid rgba(105,181,120,0.20);
-                    padding: 18px 0;
+                    padding: 14px 0;
                     display: flex;
                     flex-wrap: wrap;
                     align-items: center;
@@ -1098,7 +1033,7 @@
     <script>
         /* â”€â”€â”€ helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
         function _cartFormatMoney(v) {
-            return '$' + parseFloat(v).toFixed(2);
+            return 'MXN $' + parseFloat(v).toFixed(2);
         }
 
         function _cartUpdateBadge(count) {

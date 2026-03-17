@@ -425,6 +425,204 @@
         .star-rating label:hover ~ label {
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%23C9A227' stroke='%23C9A227' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'%3E%3C/polygon%3E%3C/svg%3E");
         }
+        /* ===== TOAST ===== */
+        #cart-toast {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 10000;
+            background: #fff;
+            border: 1.5px solid #69B578;
+            border-radius: 14px;
+            box-shadow: 0 8px 30px rgba(30, 111, 92, 0.22);
+            padding: 14px 20px;
+            min-width: 255px;
+            max-width: 330px;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.32s ease, transform 0.32s ease;
+            display: none;
+        }
+
+        #cart-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== QUANTITY MODAL ===== */
+        #qty-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(13, 31, 24, 0.55);
+            z-index: 20000;
+            backdrop-filter: blur(3px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        #qty-modal-overlay.open {
+            display: flex;
+        }
+
+        #qty-modal {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(30, 111, 92, 0.28);
+            border: 1.5px solid #69B578;
+            padding: 0;
+            width: 340px;
+            max-width: 94vw;
+            overflow: hidden;
+            animation: qtyModalIn 0.25s cubic-bezier(.34, 1.56, .64, 1) both;
+        }
+
+        @keyframes qtyModalIn {
+            from { opacity: 0; transform: scale(0.85) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        #qty-modal-header {
+            background: linear-gradient(135deg, #1E6F5C, #2C2C2C);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        #qty-modal-title {
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.97rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #qty-modal-close {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1.4rem;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+            transition: color 0.15s;
+        }
+
+        #qty-modal-close:hover { color: #fff; }
+
+        #qty-modal-body { padding: 22px 22px 20px; }
+        
+        #qty-modal-product-name {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #2C2C2C;
+            margin-bottom: 4px;
+            text-align: center;
+        }
+
+        #qty-modal-product-price {
+            font-size: 0.85rem;
+            color: #1E6F5C;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 18px;
+        }
+
+        .qty-label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #1E6F5C;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .qty-stepper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            border: 2px solid #69B578;
+            border-radius: 50px;
+            overflow: hidden;
+            width: fit-content;
+            margin: 0 auto 20px;
+        }
+
+        .qty-stepper button {
+            background: #eef6ef;
+            border: none;
+            width: 42px;
+            height: 42px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1E6F5C;
+            cursor: pointer;
+            transition: background 0.15s;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qty-stepper button:hover { background: #d6ead8; }
+
+        .qty-stepper input {
+            border: none;
+            width: 60px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #2C2C2C;
+            outline: none;
+            padding: 0;
+            background: #fff;
+            -moz-appearance: textfield;
+        }
+
+        #qty-modal-confirm {
+            width: 100%;
+            padding: 11px;
+            background: linear-gradient(135deg, #1E6F5C, #2C2C2C);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            font-size: 0.93rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.15s;
+            box-shadow: 0 4px 14px rgba(30, 111, 92, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        #qty-modal-confirm:hover { opacity: 0.9; transform: scale(1.02); }
+
+        #qty-modal-confirm:disabled { opacity: 0.65; cursor: wait; transform: none; }
+        
+        .navbar-cart-badge {
+            display: none;
+            min-width: 18px;
+            height: 18px;
+            background: #C9A227;
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 700;
+            border-radius: 50px;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            padding: 0 4px;
+            border: 1.5px solid #2C2C2C;
+            margin-left: -8px;
+            margin-top: -12px;
+        }
     </style>
 </head>
 <body>
@@ -446,6 +644,14 @@
 
             <div class="nav-actions">
                 @auth
+                    <a href="{{ route('cart.index') }}" class="nav-btn nav-btn-ghost" title="Ver mi carrito">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                        </svg>
+                        <span id="cart-badge" class="navbar-cart-badge">0</span>
+                    </a>
                     <a href="{{ route('home') }}" class="nav-btn nav-btn-ghost">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -553,6 +759,18 @@
                                  <span class="rating-text">{{ number_format($product->rating, 1) }} ({{ $product->reviews_count }} comentarios)</span>
                              </div>
                             <div class="detail-divider"></div>
+                            
+                            {{-- Stock Status --}}
+                            <div style="margin-bottom: 18px; display: flex; align-items: center; gap: 8px;">
+                                @if($product->stock > 0)
+                                    <div style="width: 8px; height: 8px; border-radius: 50%; background: #28a745; box-shadow: 0 0 8px #28a745;"></div>
+                                    <span style="color: #28a745; font-size: 0.85rem; font-weight: 700;">Stock disponible: {{ $product->stock }}</span>
+                                @else
+                                    <div style="width: 8px; height: 8px; border-radius: 50%; background: #dc3545; box-shadow: 0 0 8px #dc3545;"></div>
+                                    <span style="color: #dc3545; font-size: 0.85rem; font-weight: 700;">Agotado temporalmente</span>
+                                @endif
+                            </div>
+
                             <p class="detail-desc">{{ $product->description }}</p>
 
                             {{-- Price display --}}
@@ -567,12 +785,10 @@
 
                             {{-- Auth-based CTA --}}
                             @auth
-                                {{-- Usuario autenticado: puede agregar al carrito --}}
-                                <form id="add-cart-form" action="{{ route('cart.add') }}" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                    <input type="hidden" name="quantity" value="1">
-                                    <button type="submit" class="btn-add-cart" id="addCartBtn">
+                                {{-- Usuario autenticado: puede agregar al carrito si hay stock --}}
+                                @if($product->stock > 0)
+                                    <button type="button" class="btn-add-cart" id="addCartBtn" 
+                                        onclick="addToCart({{ $product->id }}, this, '{{ addslashes($product->name) }}', {{ $product->price }})">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none"
                                             stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                                             <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
@@ -580,7 +796,11 @@
                                         </svg>
                                         Añadir al carrito
                                     </button>
-                                </form>
+                                @else
+                                    <div style="background: #fffafa; border: 1.5px solid #ffeded; border-radius: 14px; padding: 15px; color: #dc3545; font-size: 0.85rem; font-weight: 600; text-align: center; margin-bottom: 12px;">
+                                        Lo sentimos, este artículo no tiene existencias por el momento.
+                                    </div>
+                                @endif
                                 <a href="{{ route('welcome') }}" class="btn-back">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
                                         stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -728,10 +948,189 @@
         </div>
     </footer>
 
+    {{-- ===== QUANTITY MODAL ===== --}}
+    <div id="qty-modal-overlay">
+        <div id="qty-modal">
+            <div id="qty-modal-header">
+                <p id="qty-modal-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" />
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                    </svg>
+                    Añadir al carrito
+                </p>
+                <button id="qty-modal-close" aria-label="Cerrar">&times;</button>
+            </div>
+            <div id="qty-modal-body">
+                <p id="qty-modal-product-name"></p>
+                <p id="qty-modal-product-price"></p>
+                <span class="qty-label">Selecciona la cantidad:</span>
+                <div class="qty-stepper">
+                    <button type="button" id="qty-minus" aria-label="Reducir cantidad">-</button>
+                    <input type="number" id="qty-input" value="1" min="1" max="99">
+                    <button type="button" id="qty-plus" aria-label="Aumentar cantidad">+</button>
+                </div>
+                <button type="button" id="qty-modal-confirm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" />
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                    </svg>
+                    Confirmar agregar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {{-- ===== TOAST ===== --}}
+    <div id="cart-toast" style="pointer-events:none;">
+        <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:34px;height:34px;background:#eef6ef;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#69B578;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div>
+                <p style="margin:0;font-size:0.9rem;font-weight:700;color:#2C2C2C;">¡Producto añadido!</p>
+                <p id="cart-toast-name" style="margin:2px 0 0;font-size:0.82rem;color:#1E6F5C;"></p>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
 
     <script>
+        /* ── helpers ────────────────────────────────────────── */
+        function _cartUpdateBadge(count) {
+            var badge = document.getElementById('cart-badge');
+            if (!badge) return;
+            if (count > 0) {
+                badge.textContent = count > 99 ? '99+' : count;
+                badge.style.display = 'inline-flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function _cartShowToast(name) {
+            var toast = document.getElementById('cart-toast');
+            var toastName = document.getElementById('cart-toast-name');
+            if (!toast) return;
+            if (toastName) toastName.textContent = name || '';
+            toast.style.display = 'block';
+            requestAnimationFrame(function () {
+                requestAnimationFrame(function () { toast.classList.add('show'); });
+            });
+            clearTimeout(window._cartToastTimer);
+            window._cartToastTimer = setTimeout(function () {
+                toast.classList.remove('show');
+                setTimeout(function () { toast.style.display = 'none'; }, 350);
+            }, 3000);
+        }
+
+        /* ── GLOBAL addToCart ──────────────────────────────── */
+        window.addToCart = function (productId, btn, name, price) {
+            var overlay = document.getElementById('qty-modal-overlay');
+            var inp = document.getElementById('qty-input');
+            if (!overlay || !inp) {
+                _cartDoAdd(productId, 1, btn);
+                return;
+            }
+            window._cartPendingId = productId;
+            window._cartPendingBtn = btn;
+            inp.value = 1;
+            var nameEl = document.getElementById('qty-modal-product-name');
+            var priceEl = document.getElementById('qty-modal-product-price');
+            if (nameEl) nameEl.textContent = name || '';
+            if (priceEl) priceEl.textContent = price ? 'MXN $' + parseFloat(price).toFixed(2) : '';
+            overlay.classList.add('open');
+            inp.focus();
+        };
+
+        /* ── actual POST to /cart/add ──────────────────────── */
+        function _cartDoAdd(productId, qty, btn) {
+            if (btn) {
+                btn.disabled = true;
+                var oldText = btn.innerHTML;
+                btn.innerHTML = 'Añadiendo...';
+            }
+            fetch('/cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ product_id: productId, qty: qty })
+            })
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                _cartUpdateBadge(data.count);
+                _cartShowToast(data.name || '');
+                if (btn) {
+                    btn.innerHTML = oldText;
+                    btn.disabled = false;
+                }
+            })
+            .catch(function (err) { 
+                console.error(err);
+                if (btn) {
+                    btn.innerHTML = oldText;
+                    btn.disabled = false;
+                }
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
+            @auth
+                /* ── cart badge on load ── */
+                fetch('/cart/count', { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                    .then(function (r) { return r.json(); })
+                    .then(function (data) { _cartUpdateBadge(data.count); })
+                    .catch(function () { });
+            @endauth
+
+            /* ── qty modal wiring ── */
+            var qtyOverlay = document.getElementById('qty-modal-overlay');
+            var qtyInput = document.getElementById('qty-input');
+            var qtyMinus = document.getElementById('qty-minus');
+            var qtyPlus = document.getElementById('qty-plus');
+            var qtyConfirm = document.getElementById('qty-modal-confirm');
+            var qtyModalClose = document.getElementById('qty-modal-close');
+
+            function closeQtyModal() {
+                if (qtyOverlay) qtyOverlay.classList.remove('open');
+            }
+
+            if (qtyMinus && qtyInput) {
+                qtyMinus.addEventListener('click', function () {
+                    var v = parseInt(qtyInput.value) || 1;
+                    if (v > 1) qtyInput.value = v - 1;
+                });
+            }
+            if (qtyPlus && qtyInput) {
+                qtyPlus.addEventListener('click', function () {
+                    var v = parseInt(qtyInput.value) || 1;
+                    if (v < 99) qtyInput.value = v + 1;
+                });
+            }
+            if (qtyModalClose) qtyModalClose.addEventListener('click', closeQtyModal);
+            if (qtyOverlay) {
+                qtyOverlay.addEventListener('click', function (e) {
+                    if (e.target === qtyOverlay) closeQtyModal();
+                });
+            }
+
+            if (qtyConfirm && qtyInput) {
+                qtyConfirm.addEventListener('click', function () {
+                    var qty = Math.min(99, Math.max(1, parseInt(qtyInput.value) || 1));
+                    var productId = window._cartPendingId;
+                    var btn = window._cartPendingBtn;
+                    closeQtyModal();
+                    _cartDoAdd(productId, qty, btn);
+                });
+            }
+
+            /* Scroll to reviews if needed */
             @if($errors->has('rating') || $errors->has('comment') || session('success'))
                 var reviewsSection = document.getElementById('reviews-section');
                 if(reviewsSection) {

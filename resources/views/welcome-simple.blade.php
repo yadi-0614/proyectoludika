@@ -112,7 +112,7 @@
                                         </svg>
                                     </div>
                                 @endif
-                                <div class="product-card__badge">${{ number_format($product->price, 2) }}</div>
+                                <div class="product-card__badge">MXN ${{ number_format($product->price, 2) }}</div>
                             </div>
 
                              {{-- Body --}}
@@ -812,4 +812,3 @@
         // Future enhancements
     </script>
 @endpush
-

@@ -163,6 +163,13 @@ class UserController extends Controller
                 ->with("error", "El administrador principal no puede ser eliminado.");
         }
 
+        // Prevenir eliminar si tiene compras
+        if ($user->has_purchases) {
+            return redirect()
+                ->route("users.index")
+                ->with("error", "El usuario no puede ser eliminado porque ya ha realizado compras.");
+        }
+
         // Eliminar avatar si existe
         if ($user->avatar) {
             $this->fileService->delete($user->avatar);
@@ -192,6 +199,13 @@ class UserController extends Controller
             return redirect()
                 ->route("users.index")
                 ->with("error", "El administrador principal no puede ser desactivado.");
+        }
+
+        // Prevenir desactivar si tiene compras
+        if ($user->is_active && $user->has_purchases) {
+            return redirect()
+                ->route("users.index")
+                ->with("error", "El usuario no puede ser desactivado porque ya ha realizado compras.");
         }
 
         $user->is_active = !$user->is_active;
@@ -289,6 +303,18 @@ class UserController extends Controller
                         <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                         <span class="d-none d-sm-inline">Editar</span>
                     </button>
+                </div>';
+            } elseif ($user->has_purchases) {
+                // Si tiene compras, solo permitimos editar.
+                $actionsHtml = '<div class="action-btns">
+                    <button class="btn-edit" onclick="execute(\'/users/' . $user->id . '/edit\')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        <span class="d-none d-sm-inline">Editar</span>
+                    </button>
+                    <span style="font-size: 0.75rem; color: #888; font-weight: 500; font-style: italic; opacity: 0.8; padding: 7px;" title="No se puede eliminar ni desactivar porque tiene compras realizadas">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:2px"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        Con Compras
+                    </span>
                 </div>';
             } else {
                 $actionsHtml = '<div class="action-btns">

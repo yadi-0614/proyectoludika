@@ -422,6 +422,7 @@
                             <th>Categoría</th>
                             <th>Descripción</th>
                             <th>Precio</th>
+                            <th>Stock</th>
                             <th class="text-end">Acciones</th>
                         </tr>
                     </thead>
@@ -444,6 +445,7 @@
                     { data: 'category' },
                     { data: 'description' },
                     { data: 'price' },
+                    { data: 'stock' },
                     { data: 'actions', orderable: false, searchable: false }
                 ],
                 pageLength: 10,

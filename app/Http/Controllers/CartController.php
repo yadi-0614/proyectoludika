@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class CartController extends Controller
@@ -214,9 +217,19 @@ class CartController extends Controller
 
         $bankReference = $this->generateBankReference();
 
+        // --- MODIFICACIÓN: Comprobar Stock antes de procesar pago ---
+        foreach ($cartData['items'] as $item) {
+            $product = Product::find($item['id']);
+            if (!$product || $product->stock < $item['qty']) {
+                $stockAvailable = $product ? $product->stock : 0;
+                return redirect()->route('cart.index')
+                    ->with('error', "Lo sentimos, el producto '" . ($product ? $product->name : 'Desconocido') . "' no tiene suficiente stock (Disponible: {$stockAvailable}).");
+            }
+        }
+
         return $provider === 'stripe'
             ? $this->startStripeCheckout($cartData['items'], $cartData['total'], $bankReference)
-            : $this->startPayPalCheckout($cartData['total'], $bankReference);
+            : $this->startPayPalCheckout($cartData['items'], $cartData['total'], $bankReference);
     }
 
     /**
@@ -256,6 +269,14 @@ class CartController extends Controller
         $bankReference = data_get($sessionData, 'payment_intent.metadata.bank_reference')
             ?? data_get($sessionData, 'metadata.bank_reference')
             ?? data_get(session('pending_checkout', []), 'bank_reference', 'N/A');
+
+        $pending = session('pending_checkout', []);
+        $items = $pending['items'] ?? [];
+        $total = $pending['total'] ?? 0;
+
+        if (!empty($items)) {
+            $this->finalizePurchase($bankReference, $total, $items);
+        }
 
         session()->forget('cart');
         session()->forget('pending_checkout');
@@ -306,6 +327,14 @@ class CartController extends Controller
         $bankReference = data_get($captureData, 'purchase_units.0.payments.captures.0.invoice_id')
             ?? data_get($captureData, 'purchase_units.0.reference_id')
             ?? data_get(session('pending_checkout', []), 'bank_reference', 'N/A');
+
+        $pending = session('pending_checkout', []);
+        $items = $pending['items'] ?? [];
+        $total = $pending['total'] ?? 0;
+
+        if (!empty($items)) {
+            $this->finalizePurchase($bankReference, $total, $items);
+        }
 
         session()->forget('cart');
         session()->forget('pending_checkout');
@@ -409,12 +438,13 @@ class CartController extends Controller
             'provider' => 'stripe',
             'bank_reference' => $bankReference,
             'total' => $total,
+            'items' => $items,
         ]);
 
         return redirect()->away($checkoutUrl);
     }
 
-    private function startPayPalCheckout(float $total, string $bankReference)
+    private function startPayPalCheckout(array $items, float $total, string $bankReference)
     {
         $accessToken = $this->getPayPalAccessToken();
         $baseUrl = rtrim((string) config('services.paypal.base_url'), '/');
@@ -469,6 +499,7 @@ class CartController extends Controller
             'bank_reference' => $bankReference,
             'order_id' => data_get($orderData, 'id'),
             'total' => $total,
+            'items' => $items,
         ]);
 
         return redirect()->away($approvalUrl);
@@ -499,5 +530,34 @@ class CartController extends Controller
         }
 
         return data_get($response->json(), 'access_token');
+    }
+
+    private function finalizePurchase($bankReference, $total, $items)
+    {
+        return DB::transaction(function () use ($bankReference, $total, $items) {
+            $order = Order::create([
+                'user_id' => auth()->id(),
+                'bank_reference' => $bankReference,
+                'total' => $total,
+                'status' => 'completed',
+            ]);
+
+            foreach ($items as $item) {
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $item['id'],
+                    'quantity' => $item['qty'],
+                    'price' => $item['unit_price'],
+                ]);
+
+                // Descontar stock
+                $product = Product::find($item['id']);
+                if ($product) {
+                    $product->decrement('stock', $item['qty']);
+                }
+            }
+
+            return $order;
+        });
     }
 }
