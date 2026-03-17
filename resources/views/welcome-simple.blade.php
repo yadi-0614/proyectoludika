@@ -6,59 +6,55 @@
     <section class="hero-section">
         <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
             {{-- Indicators --}}
-            @if($flyerProducts->count() > 0)
-                <div class="carousel-indicators">
-                    @foreach($flyerProducts as $index => $flyer)
-                        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ $index }}" class="{{ $index === 0 ? 'active' : '' }}" aria-label="Slide {{ $index + 1 }}"></button>
-                    @endforeach
-                </div>
+            <div class="carousel-indicators">
+                @foreach($products->take(4) as $index => $heroProd)
+                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ $index }}" 
+                        class="{{ $index == 0 ? 'active' : '' }}" aria-current="{{ $index == 0 ? 'true' : 'false' }}" 
+                        aria-label="Slide {{ $index + 1 }}"></button>
+                @endforeach
+            </div>
 
-                <div class="carousel-inner">
-                    @foreach($flyerProducts as $index => $flyer)
-                        <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                            @if($flyer->image && Storage::disk('public')->exists($flyer->image))
-                                <img src="{{ asset('storage/' . $flyer->image) }}" class="d-block w-100 hero-carousel-img" alt="{{ $flyer->name }}">
-                            @else
-                                <div class="d-flex align-items-center justify-content-center hero-carousel-img" style="background: #1E6F5C;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                                </div>
-                            @endif
-                            <div class="hero-overlay"></div>
-                            <div class="carousel-caption hero-content">
-                                <h1 class="hero-title">{{ $flyer->name }}</h1>
-                                <p class="hero-subtitle">{{ Str::limit($flyer->description, 100) }}</p>
-                                <a href="{{ route('product.show', $flyer->id) }}" class="hero-btn mt-3" style="font-size: 0.9rem; padding: 10px 25px;">
-                                    Ver producto
-                                </a>
+            <div class="carousel-inner">
+                @foreach($products->take(4) as $index => $heroProd)
+                    <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+                        @if($heroProd->image && Storage::disk('public')->exists($heroProd->image))
+                            <img src="{{ asset('storage/' . $heroProd->image) }}" class="d-block w-100 hero-carousel-img" alt="{{ $heroProd->name }}">
+                        @else
+                            <div class="hero-carousel-img d-flex align-items-center justify-content-center" style="background: #1E6F5C;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                             </div>
-                        </div>
-                    @endforeach
-                </div>
-
-                {{-- Controls only if more than 1 --}}
-                @if($flyerProducts->count() > 1)
-                    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Anterior</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide;="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Siguiente</span>
-                    </button>
-                @endif
-            @else
-                {{-- Fallback matching original design if no products --}}
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <div class="hero-carousel-img" style="background: #0d1f18;"></div>
+                        @endif
+                        
                         <div class="hero-overlay"></div>
                         <div class="carousel-caption hero-content">
-                            <h1 class="hero-title">¡Bienvenido a Lúdika!</h1>
-                            <p class="hero-subtitle">Descubre el fascinante mundo de los juegos de mesa.</p>
+                            @if($index == 0)
+                                @guest
+                                    <h1 class="hero-title">¡Bienvenido a Lúdika!</h1>
+                                    <p class="hero-subtitle">Descubre el fascinante mundo de los juegos de mesa.</p>
+                                @else
+                                    <h1 class="hero-title">¡Hola, {{ Auth::user()->name }}!</h1>
+                                    <p class="hero-subtitle">Explora nuestra colección de juegos exclusivos.</p>
+                                    <a href="{{ route('home') }}" class="hero-btn">Ir al menú</a>
+                                @endguest
+                            @else
+                                <h1 class="hero-title">{{ $heroProd->name }}</h1>
+                                <p class="hero-subtitle">{{ Str::limit($heroProd->description, 100) }}</p>
+                                <a href="{{ route('product.show', $heroProd->id) }}" class="hero-btn">Ver detalles</a>
+                            @endif
                         </div>
                     </div>
-                </div>
-            @endif
+                @endforeach
+            </div>
+
+            {{-- Controls --}}
+            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Siguiente</span>
+            </button>
         </div>
     </section>
 

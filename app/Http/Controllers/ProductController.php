@@ -61,11 +61,8 @@ class ProductController extends Controller
 
         $products = $query->paginate(8)->withQueryString();
         $categories = Category::withCount('products')->get();
-        
-        // Fetch top 4 products for the flyer (carousel)
-        $flyerProducts = Product::latest()->take(4)->get();
 
-        return view("welcome-simple", compact('products', 'search', 'categories', 'category_slug', 'flyerProducts'));
+        return view("welcome-simple", compact('products', 'search', 'categories', 'category_slug'));
     }
 
     public function create(Request $request)
