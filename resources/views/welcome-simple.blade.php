@@ -2,23 +2,63 @@
 
 @section('content')
 
-    {{-- ===== HERO SECTION ===== --}}
+    {{-- ===== HERO SECTION (FLYER) ===== --}}
     <section class="hero-section">
-        <div class="hero-overlay"></div>
-        <div class="container hero-content">
-            @guest
-                <h1 class="hero-title">¡Bienvenido a nuestra tienda!</h1>
-                <p class="hero-subtitle">Descubre nuestra colección de productos exclusivos.</p>
-                <a href="{{ route('acercade') }}" class="hero-btn">
-                    Acerca de
-                </a>
+        <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+            {{-- Indicators --}}
+            @if($flyerProducts->count() > 0)
+                <div class="carousel-indicators">
+                    @foreach($flyerProducts as $index => $flyer)
+                        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ $index }}" class="{{ $index === 0 ? 'active' : '' }}" aria-label="Slide {{ $index + 1 }}"></button>
+                    @endforeach
+                </div>
+
+                <div class="carousel-inner">
+                    @foreach($flyerProducts as $index => $flyer)
+                        <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                            @if($flyer->image && Storage::disk('public')->exists($flyer->image))
+                                <img src="{{ asset('storage/' . $flyer->image) }}" class="d-block w-100 hero-carousel-img" alt="{{ $flyer->name }}">
+                            @else
+                                <div class="d-flex align-items-center justify-content-center hero-carousel-img" style="background: #1E6F5C;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                </div>
+                            @endif
+                            <div class="hero-overlay"></div>
+                            <div class="carousel-caption hero-content">
+                                <h1 class="hero-title">{{ $flyer->name }}</h1>
+                                <p class="hero-subtitle">{{ Str::limit($flyer->description, 100) }}</p>
+                                <a href="{{ route('product.show', $flyer->id) }}" class="hero-btn mt-3" style="font-size: 0.9rem; padding: 10px 25px;">
+                                    Ver producto
+                                </a>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                {{-- Controls only if more than 1 --}}
+                @if($flyerProducts->count() > 1)
+                    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Anterior</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide;="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Siguiente</span>
+                    </button>
+                @endif
             @else
-                <h1 class="hero-title">¡Hola, {{ Auth::user()->name }}!</h1>
-                <p class="hero-subtitle">Explora nuestra colección o ve al menú principal.</p>
-                <a href="{{ route('home') }}" class="hero-btn">
-                    Ir al menú
-                </a>
-            @endguest
+                {{-- Fallback matching original design if no products --}}
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="hero-carousel-img" style="background: #0d1f18;"></div>
+                        <div class="hero-overlay"></div>
+                        <div class="carousel-caption hero-content">
+                            <h1 class="hero-title">¡Bienvenido a Lúdika!</h1>
+                            <p class="hero-subtitle">Descubre el fascinante mundo de los juegos de mesa.</p>
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
     </section>
 
@@ -231,23 +271,36 @@
         /* ===== HERO ===== */
         .hero-section {
             position: relative;
-            background: linear-gradient(135deg, var(--negro-bosque) 0%, var(--verde-selva) 55%, var(--verde-hoja) 100%);
-            padding: 80px 0 70px;
+            background: #0d1f18;
+            padding: 0;
             text-align: center;
             overflow: hidden;
+            min-height: 450px;
         }
 
-        .hero-section::before {
-            content: '';
+        .hero-carousel-img {
+            height: 450px;
+            object-fit: cover;
+            filter: brightness(0.7);
+        }
+
+        .hero-overlay {
             position: absolute;
             inset: 0;
-            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            pointer-events: none;
+            background: linear-gradient(to bottom, rgba(13, 31, 24, 0.4), rgba(13, 31, 24, 0.7));
+            z-index: 1;
         }
 
         .hero-content {
-            position: relative;
-            z-index: 1;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            width: 100%;
+            padding: 0 20px;
+            margin-bottom: 0 !important;
+            bottom: auto !important;
         }
 
         .hero-title {

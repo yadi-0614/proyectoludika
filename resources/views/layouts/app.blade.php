@@ -662,6 +662,13 @@
                     Lúdika
                 </a>
 
+                {{-- Navegación principal --}}
+                <div class="d-none d-md-flex align-items-center ms-3">
+                    <a href="{{ route('acercade') }}" class="nav-link-ghost" style="font-weight: 600;">
+                        Quiénes somos
+                    </a>
+                </div>
+
                 <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
