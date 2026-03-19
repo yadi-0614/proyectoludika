@@ -85,13 +85,13 @@
                     <select name="category" class="search-bar__select" onchange="this.form.submit()">
                         <option value="">Todas las categorías</option>
                         @foreach($categories as $category)
-                            <option value="{{ $category->slug }}" {{ $category_slug == $category->slug ? 'selected' : '' }}>
+                            <option value="{{ $category->id }}" {{ $selected_category == $category->id ? 'selected' : '' }}>
                                 {{ $category->name }}
                             </option>
                         @endforeach
                     </select>
 
-                    @if($search || $category_slug)
+                    @if($search || $selected_category)
                         <a href="{{ url('/') }}" class="search-bar__clear" title="Limpiar filtros">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -114,12 +114,12 @@
 
             {{-- Category Pills --}}
             <div class="category-pills">
-                <a href="{{ url('/') }}" class="category-pill {{ !$category_slug ? 'active' : '' }}">
+                <a href="{{ url('/') }}" class="category-pill {{ !$selected_category ? 'active' : '' }}">
                     Todos
                 </a>
                 @foreach($categories as $cat)
-                    <a href="{{ url('/?category=' . $cat->slug . ($search ? '&search=' . $search : '')) }}" 
-                       class="category-pill {{ $category_slug == $cat->slug ? 'active' : '' }}">
+                    <a href="{{ url('/?category=' . $cat->id . ($search ? '&search=' . $search : '')) }}" 
+                       class="category-pill {{ $selected_category == $cat->id ? 'active' : '' }}">
                         {{ $cat->name }}
                         <span class="category-count">{{ $cat->products_count }}</span>
                     </a>

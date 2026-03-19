@@ -39,6 +39,42 @@ class LoginController extends Controller
     }
 
     /**
+     * The user has been authenticated.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function authenticated(\Illuminate\Http\Request $request, $user)
+    {
+        // Cargar carrito de la DB a la sesión al iniciar sesión
+        $dbItems = \App\Models\CartItem::where('user_id', $user->id)->get();
+        $cart = session()->get('cart', []);
+        
+        foreach ($dbItems as $item) {
+            // Si el producto ya está en el carrito de la sesión (como invitado), sumamos la cantidad
+            if (isset($cart[$item->product_id])) {
+                $cart[$item->product_id] += $item->quantity;
+                if ($cart[$item->product_id] > 99) $cart[$item->product_id] = 99;
+            } else {
+                $cart[$item->product_id] = $item->quantity;
+            }
+        }
+        
+        session()->put('cart', $cart);
+
+        // Actualizar la base de datos para que refleje la unión
+        \App\Models\CartItem::where('user_id', $user->id)->delete();
+        foreach ($cart as $pid => $qty) {
+            \App\Models\CartItem::create([
+                'user_id' => $user->id,
+                'product_id' => $pid,
+                'quantity' => $qty,
+            ]);
+        }
+    }
+
+    /**
      * Validate the user login request.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -82,10 +118,18 @@ class LoginController extends Controller
 
         if ($user && !$user->is_active) {
             throw \Illuminate\Validation\ValidationException::withMessages([
-                $this->username() => ['Su cuenta no se ha encontrado.'],
+                $this->username() => ['Su cuenta ha sido desactivada.'],
             ]);
         }
 
+        // Si el usuario existe, el fallo de autenticación es por la contraseña
+        if ($user) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'password' => [trans('auth.password')],
+            ]);
+        }
+
+        // De lo contrario, el correo no está registrado
         throw \Illuminate\Validation\ValidationException::withMessages([
             $this->username() => [trans('auth.failed')],
         ]);

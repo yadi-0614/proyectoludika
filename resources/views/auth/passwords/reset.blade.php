@@ -124,6 +124,16 @@
             background: #fff;
         }
 
+        .form-input.is-invalid {
+            border-color: #dc3545;
+            background: #fffafa;
+        }
+
+        .form-input.is-invalid:focus {
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15);
+            border-color: #dc3545;
+        }
+
         .btn-login {
             width: 100%;
             padding: 12px;
@@ -220,7 +230,7 @@
                                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                                 </svg>
                             </span>
-                            <input id="password-confirm" type="password" class="form-input" name="password_confirmation" required autocomplete="new-password" placeholder="••••••••">
+                            <input id="password-confirm" type="password" class="form-input {{ $errors->has('password') ? 'is-invalid' : '' }}" name="password_confirmation" required autocomplete="new-password" placeholder="••••••••">
                         </div>
                     </div>
 

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+// use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -22,7 +22,6 @@ class CategoryController extends Controller
 
         Category::create([
             'name' => $validated['name'],
-            'slug' => Str::slug($validated['name']),
         ]);
 
         return redirect()->back()->with('success', 'Categoría creada exitosamente.');
@@ -36,7 +35,6 @@ class CategoryController extends Controller
 
         $category->update([
             'name' => $validated['name'],
-            'slug' => Str::slug($validated['name']),
         ]);
 
         return redirect()->back()->with('success', 'Categoría actualizada exitosamente.');

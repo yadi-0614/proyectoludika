@@ -27,8 +27,17 @@ class CartController extends Controller
             foreach ($cart as $productId => $qty) {
                 if ($products->has($productId)) {
                     $product = $products[$productId];
+                    
+                    $hasStock = $product->stock >= $qty;
+                    $isAvailable = $product->stock > 0;
+                    
                     $subtotal = $product->price * $qty;
-                    $total += $subtotal;
+                    
+                    // Solo sumar al total si hay stock suficiente
+                    if ($hasStock) {
+                        $total += $subtotal;
+                    }
+
                     $items[] = [
                         'id' => $product->id,
                         'name' => $product->name,
@@ -36,6 +45,9 @@ class CartController extends Controller
                         'image' => $product->image,
                         'qty' => $qty,
                         'subtotal' => $subtotal,
+                        'stock' => $product->stock,
+                        'has_stock' => $hasStock,
+                        'is_available' => $isAvailable,
                     ];
                 }
             }
@@ -65,6 +77,7 @@ class CartController extends Controller
         }
 
         session()->put('cart', $cart);
+        $this->syncCartToDatabase();
 
         $totalCount = array_sum($cart);
         $product = Product::find($productId);
@@ -137,6 +150,7 @@ class CartController extends Controller
 
         $cart[$productId] = (int) $request->input('qty');
         session()->put('cart', $cart);
+        $this->syncCartToDatabase();
 
         $product = Product::find($productId);
         $subtotal = $product ? $product->price * $cart[$productId] : 0;
@@ -166,6 +180,7 @@ class CartController extends Controller
         $cart = session()->get('cart', []);
         unset($cart[$productId]);
         session()->put('cart', $cart);
+        $this->syncCartToDatabase();
 
         $total = 0;
         if (!empty($cart)) {
@@ -190,6 +205,7 @@ class CartController extends Controller
     public function clear()
     {
         session()->forget('cart');
+        $this->syncCartToDatabase();
 
         return response()->json([
             'success' => true,
@@ -532,6 +548,24 @@ class CartController extends Controller
         return data_get($response->json(), 'access_token');
     }
 
+    private function syncCartToDatabase()
+    {
+        if (!auth()->check()) return;
+
+        $user = auth()->user();
+        $cart = session()->get('cart', []);
+
+        \App\Models\CartItem::where('user_id', $user->id)->delete();
+
+        foreach ($cart as $productId => $qty) {
+            \App\Models\CartItem::create([
+                'user_id' => $user->id,
+                'product_id' => $productId,
+                'quantity' => $qty,
+            ]);
+        }
+    }
+
     private function finalizePurchase($bankReference, $total, $items)
     {
         return DB::transaction(function () use ($bankReference, $total, $items) {
@@ -556,6 +590,9 @@ class CartController extends Controller
                     $product->decrement('stock', $item['qty']);
                 }
             }
+
+            // Limpiar carrito en DB después de compra
+            \App\Models\CartItem::where('user_id', auth()->id())->delete();
 
             return $order;
         });

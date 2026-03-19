@@ -14,6 +14,7 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\OrderController;
 
 use App\Http\Controllers\UserController;
 
@@ -76,6 +77,10 @@ Route::middleware(["auth", "security:auth"])->group(function () {
     // Perfil del usuario
     Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    // Historial de compras
+    Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 
     // Rutas de productos
     Route::resource("products", ProductController::class)->except([

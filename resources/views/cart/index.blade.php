@@ -96,7 +96,14 @@
                                 {{-- Info --}}
                                 <div class="cart-item__info">
                                     <p class="cart-item__name">{{ $item['name'] }}</p>
-                                    <p class="cart-item__price">MXN ${{ number_format($item['price'], 2) }} c/u</p>
+                                    <div class="cart-item__meta">
+                                        <p class="cart-item__price">MXN ${{ number_format($item['price'], 2) }} c/u</p>
+                                        @if(!$item['is_available'])
+                                            <span class="stock-badge stock-badge--out">Agotado</span>
+                                        @elseif(!$item['has_stock'])
+                                            <span class="stock-badge stock-badge--low">Stock insuficiente (Disponible: {{ $item['stock'] }})</span>
+                                        @endif
+                                    </div>
                                 </div>
 
                                 {{-- Qty controls --}}
@@ -164,6 +171,10 @@
                         <span id="summary-total">MXN ${{ number_format($total, 2) }}</span>
                     </div>
 
+                    @php
+                        $hasStockIssues = collect($items)->contains(fn($i) => !$i['has_stock']);
+                    @endphp
+
                     <form id="checkout-form" action="{{ route('cart.checkout') }}" method="POST">
                         @csrf
                         <div class="payment-methods">
@@ -180,7 +191,15 @@
                                 <p class="payment-methods__error">{{ $message }}</p>
                             @enderror
                         </div>
-                        <button type="submit" class="btn-checkout" id="btn-checkout">
+
+                        @if($hasStockIssues)
+                            <div class="stock-error-notice">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1"/></svg>
+                                Algunos productos no tienen stock suficiente.
+                            </div>
+                        @endif
+
+                        <button type="submit" class="btn-checkout" id="btn-checkout" {{ $hasStockIssues ? 'disabled' : '' }} title="{{ $hasStockIssues ? 'Corrige los productos sin stock antes de continuar' : '' }}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
@@ -626,6 +645,49 @@
         to   { opacity: 0; transform: translateX(20px); }
     }
 
+    /* STOCK BADGES */
+    .cart-item__meta { display: flex; flex-direction: column; gap: 4px; }
+    .stock-badge {
+        font-size: 0.68rem;
+        font-weight: 800;
+        padding: 2px 7px;
+        border-radius: 6px;
+        display: inline-block;
+        width: fit-content;
+        text-transform: uppercase;
+        letter-spacing: 0.2px;
+    }
+    .stock-badge--out {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+    }
+    .stock-badge--low {
+        background: #fef3c7;
+        color: #92400e;
+        border: 1px solid #fde68a;
+    }
+    .stock-error-notice {
+        margin-top: 15px;
+        padding: 10px;
+        background: #fff5f5;
+        border: 1px dashed #feb2b2;
+        border-radius: 8px;
+        color: #c53030;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .btn-checkout:disabled {
+        background: #cbd5e0;
+        cursor: not-allowed;
+        box-shadow: none;
+        opacity: 0.7;
+    }
+    .btn-checkout:disabled:hover { transform: none; opacity: 0.7; }
+</style>
     @media (max-width: 600px) {
         .cart-item {
             grid-template-columns: 54px 1fr;

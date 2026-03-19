@@ -124,6 +124,16 @@
             background: #fff;
         }
 
+        .form-input.is-invalid {
+            border-color: #dc3545;
+            background: #fffafa;
+        }
+
+        .form-input.is-invalid:focus {
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15);
+            border-color: #dc3545;
+        }
+
         .btn-login {
             width: 100%;
             padding: 12px;

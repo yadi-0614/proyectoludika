@@ -27,7 +27,7 @@ class ProfileController extends Controller
         $user = Auth::user();
 
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ñ\Ñ]+$/u'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'avatar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'current_password' => ['nullable', 'string'],
@@ -42,6 +42,7 @@ class ProfileController extends Controller
                 'regex:/([^A-Za-z0-9].*){2,}/',
             ],
         ], [
+            'name.regex' => 'El nombre completo no debe contener números ni caracteres especiales.',
             'new_password.regex' => 'La nueva contraseña debe contener al menos 2 caracteres especiales.',
         ]);
 

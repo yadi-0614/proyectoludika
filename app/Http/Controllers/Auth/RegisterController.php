@@ -53,7 +53,7 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ñ\Ñ]+$/u'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'captcha' => ['required', 'captcha'],
             'password' => [
@@ -67,6 +67,7 @@ class RegisterController extends Controller
                 'regex:/([^A-Za-z0-9].*){2,}/', // Específicamente requerimos al menos 2 símbolos
             ],
         ], [
+            'name.regex' => 'El nombre completo no debe contener números ni caracteres especiales.',
             'password.regex' => 'La contraseña debe contener al menos 2 caracteres especiales.',
             'captcha.required' => 'Por favor, completa el captcha.',
             'captcha.captcha' => 'El captcha ingresado es incorrecto.',

@@ -168,14 +168,21 @@
         }
 
         .form-input.is-invalid {
-            border-color: #1E6F5C;
+            border-color: #dc3545;
+            background: #fffafa;
+        }
+
+        .form-input.is-invalid:focus {
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15);
+            border-color: #dc3545;
         }
 
         .invalid-feedback {
-            color: #1E6F5C;
+            color: #dc3545;
             font-size: 0.78rem;
             margin-top: 4px;
             display: block;
+            font-weight: 600;
         }
 
         .remember-row {

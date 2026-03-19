@@ -319,7 +319,9 @@
                     <input name="name" type="text"
                         class="form-control {{ $errors->has('name')? 'is-invalid' : ''}}" id="name"
                         value="{{ old('name', $user->name ?? '') }}" required maxlength="255"
-                        placeholder="Nombre completo">
+                        placeholder="Nombre completo"
+                        pattern="^[a-zA-Z\s\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ñ\Ñ]+$"
+                        title="El nombre no debe contener números ni caracteres especiales">
                     <div class="invalid-feedback">
                         {{ isset($errors) && $errors->has('name') ? $errors->first('name') : 'Campo requerido.' }}
                     </div>
@@ -465,7 +467,12 @@
                         form.classList.add('was-validated')
                     }, false)
                 })
-            })()
+            })();
+
+            // Filtro para evitar números en el campo de nombre
+            document.getElementById('name').addEventListener('input', function() {
+                this.value = this.value.replace(/[0-9]/g, '');
+            });
         </script>
         @stack('scripts')
     @endsection

@@ -107,8 +107,21 @@
         box-shadow: 0 0 0 3px rgba(30,111,92,0.10);
         background: #fff;
     }
-    .form-input.is-invalid { border-color: #1E6F5C; }
-    .invalid-feedback { color: #1E6F5C; font-size: 0.77rem; margin-top: 3px; display: block; }
+    .form-input.is-invalid {
+        border-color: #dc3545;
+        background: #fffafa;
+    }
+    .form-input.is-invalid:focus {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15);
+    }
+    .invalid-feedback {
+        color: #dc3545;
+        font-size: 0.77rem;
+        margin-top: 3px;
+        display: block;
+        font-weight: 600;
+    }
 
     .password-toggle {
         position: absolute;
@@ -194,7 +207,9 @@
                         <input id="name" type="text" name="name"
                                class="form-input {{ $errors->has('name') ? 'is-invalid' : '' }}"
                                value="{{ old('name') }}" required autocomplete="name" autofocus
-                               placeholder="Tu nombre">
+                               placeholder="Tu nombre"
+                               pattern="^[a-zA-Z\s\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ñ\Ñ]+$"
+                               title="El nombre no debe contener números ni caracteres especiales">
                     </div>
                     @error('name')
                         <span class="invalid-feedback">{{ $message }}</span>
@@ -261,7 +276,7 @@
                             </svg>
                         </span>
                         <input id="password-confirm" type="password" name="password_confirmation"
-                               class="form-input"
+                               class="form-input {{ $errors->has('password') ? 'is-invalid' : '' }}"
                                value="{{ old('password_confirmation') }}"
                                required autocomplete="new-password"
                                placeholder="Repite tu contraseña">
@@ -356,6 +371,12 @@ document.addEventListener('DOMContentLoaded', function () {
         submitting = true;
         btn.disabled = true;
         btnText.textContent = 'Creando cuenta…';
+    });
+
+    // Filtro para evitar números en el campo de nombre
+    var nameInput = document.getElementById('name');
+    nameInput.addEventListener('input', function() {
+        this.value = this.value.replace(/[0-9]/g, '');
     });
 });
 </script>

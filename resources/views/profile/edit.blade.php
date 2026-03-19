@@ -75,10 +75,12 @@
                         style="display:block;font-size:0.82rem;font-weight:700;color:#1E6F5C;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em;">
                         Nombre completo
                     </label>
-                    <input type="text" name="name" value="{{ old('name', Auth::user()->name) }}" style="width:100%;padding:11px 14px;border:1.5px solid {{ $errors->has('name') ? '#1E6F5C' : '#b5d9bc' }};
+                    <input type="text" id="name" name="name" value="{{ old('name', Auth::user()->name) }}" style="width:100%;padding:11px 14px;border:1.5px solid {{ $errors->has('name') ? '#1E6F5C' : '#b5d9bc' }};
                                               border-radius:12px;font-size:0.95rem;outline:none;
                                               background:#f7faf7;transition:border-color .2s;box-sizing:border-box;"
-                        onfocus="this.style.borderColor='#1E6F5C'" onblur="this.style.borderColor='#b5d9bc'">
+                        onfocus="this.style.borderColor='#1E6F5C'" onblur="this.style.borderColor='#b5d9bc'"
+                        pattern="^[a-zA-Z\s\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ñ\Ñ]+$"
+                        title="El nombre no debe contener números ni caracteres especiales">
                     @error('name')
                         <p style="color:#1E6F5C;font-size:0.78rem;margin:4px 0 0;">{{ $message }}</p>
                     @enderror
@@ -206,4 +208,10 @@
             </a>
         </div>
     </div>
+    <script>
+        // Filtro para evitar números en el campo de nombre
+        document.getElementById('name').addEventListener('input', function() {
+            this.value = this.value.replace(/[0-9]/g, '');
+        });
+    </script>
 @endsection

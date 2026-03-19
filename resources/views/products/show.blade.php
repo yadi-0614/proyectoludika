@@ -9,6 +9,8 @@
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         :root {
@@ -906,18 +908,18 @@
                                 </div>
                                 <span class="review-date">{{ $review->created_at->diffForHumans() }}</span>
                                 @if(Auth::check() && Auth::user()->hasRole('admin'))
-                                    <form action="{{ route('reviews.destroy', $review->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este comentario?');" style="display:inline;">
+                                    <form id="delete-form-{{ $review->id }}" action="{{ route('reviews.destroy', $review->id) }}" method="POST" style="display:none;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-link text-danger p-0 ms-2" title="Eliminar comentario">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <polyline points="3 6 5 6 21 6"></polyline>
-                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                <line x1="14" y1="11" x2="14" y2="17"></line>
-                                            </svg>
-                                        </button>
                                     </form>
+                                    <button type="button" class="btn btn-link text-danger p-0 ms-2" title="Eliminar comentario" onclick="confirmDeleteReview({{ $review->id }})">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                                        </svg>
+                                    </button>
                                 @endif
                             </div>
                             <div class="review-stars">
@@ -1130,6 +1132,18 @@
                 });
             }
 
+            /* Show success message if present */
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Hecho!',
+                    text: "{{ session('success') }}",
+                    confirmButtonColor: '#1E6F5C',
+                    timer: 3500,
+                    timerProgressBar: true
+                });
+            @endif
+
             /* Scroll to reviews if needed */
             @if($errors->has('rating') || $errors->has('comment') || session('success'))
                 var reviewsSection = document.getElementById('reviews-section');
@@ -1138,6 +1152,38 @@
                 }
             @endif
         });
+
+        /* ── Delete Confirmation ───────────────────────────── */
+        window.confirmDeleteReview = function(reviewId) {
+            Swal.fire({
+                title: '¿Eliminar comentario?',
+                text: "Esta acción no se puede deshacer.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#1E6F5C',
+                cancelButtonColor: '#c0392b',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+                background: '#fff',
+                color: '#2C2C2C',
+                customClass: {
+                    popup: 'premium-swal-popup'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Show loading before submit
+                    Swal.fire({
+                        title: 'Eliminando...',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    document.getElementById('delete-form-' + reviewId).submit();
+                }
+            })
+        };
     </script>
 </body>
 </html>

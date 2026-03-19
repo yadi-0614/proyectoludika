@@ -188,7 +188,6 @@
                             <thead>
                                 <tr>
                                     <th class="ps-4">Nombre</th>
-                                    <th>Slug</th>
                                     <th class="text-center">Productos</th>
                                     <th class="text-end pe-4">Acciones</th>
                                 </tr>
@@ -197,7 +196,6 @@
                                 @forelse($categories as $category)
                                     <tr>
                                         <td class="ps-4 fw-bold text-dark">{{ $category->name }}</td>
-                                        <td class="text-muted small">/{{ $category->slug }}</td>
                                         <td class="text-center">
                                             <span class="badge-count">{{ $category->products_count }}</span>
                                         </td>

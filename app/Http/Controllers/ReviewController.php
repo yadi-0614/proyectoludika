@@ -27,7 +27,7 @@ class ReviewController extends Controller
         // Update product statistics
         $this->updateProductStats($product);
 
-        return back()->with('success', '¡Gracias por tu comentario!');
+        return redirect()->route('product.show', $product->id)->with('success', '¡Gracias por tu comentario!');
     }
 
     public function destroy(Review $review)
@@ -38,7 +38,9 @@ class ReviewController extends Controller
         // Update product statistics after deletion
         $this->updateProductStats($product);
 
-        return back()->with('success', 'Reseña eliminada correctamente.');
+        // Redirect explicitly to the product page to ensure we stay on the same page
+        return redirect()->route('product.show', $product->id)
+            ->with('success', 'Reseña eliminada correctamente.');
     }
 
     protected function updateProductStats(Product $product)
@@ -46,9 +48,9 @@ class ReviewController extends Controller
         $reviews = $product->reviews();
         $count = $reviews->count();
         $avg = $reviews->avg('rating');
-
+        
         $product->update([
-            'rating' => $avg,
+            'rating' => $avg ?? 0,
             'reviews_count' => $count,
         ]);
     }

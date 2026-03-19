@@ -39,7 +39,7 @@ class ProductController extends Controller
     public function welcome(Request $request)
     {
         $search = $request->input('search', '');
-        $category_slug = $request->input('category', '');
+        $selected_category = $request->input('category', '');
 
         $query = Product::query();
 
@@ -53,16 +53,14 @@ class ProductController extends Controller
             });
         }
 
-        if ($category_slug) {
-            $query->whereHas('category', function ($q) use ($category_slug) {
-                $q->where('slug', $category_slug);
-            });
+        if ($selected_category) {
+            $query->where('category_id', $selected_category);
         }
 
         $products = $query->paginate(8)->withQueryString();
         $categories = Category::withCount('products')->get();
 
-        return view("welcome-simple", compact('products', 'search', 'categories', 'category_slug'));
+        return view("welcome-simple", compact('products', 'search', 'categories', 'selected_category'));
     }
 
     public function create(Request $request)
@@ -117,8 +115,6 @@ class ProductController extends Controller
 
             if (!empty($validated['new_category'])) {
                 $category = Category::firstOrCreate([
-                    'slug' => Str::slug($validated['new_category'])
-                ], [
                     'name' => $validated['new_category']
                 ]);
                 $validated['category_id'] = $category->id;

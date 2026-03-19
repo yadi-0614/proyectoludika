@@ -41,7 +41,7 @@ class UserController extends Controller
             $id = $request->input("id", null);
 
             $rules = [
-                "name" => "required|string|max:255",
+                "name" => "required|string|max:255|regex:/^[a-zA-Z\s\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ñ\Ñ]+$/u",
                 "email" => ["required", "string", "email", "max:255", Rule::unique('users')->ignore($id)],
             ];
 
@@ -70,6 +70,7 @@ class UserController extends Controller
             }
 
             $validated = $request->validate($rules, [
+                'name.regex' => 'El nombre completo no debe contener números ni caracteres especiales.',
                 'password.regex' => 'La contraseña debe contener al menos 2 caracteres especiales.',
             ]);
 
