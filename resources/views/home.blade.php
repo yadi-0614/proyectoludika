@@ -67,7 +67,7 @@
                         <div class="product-card">
                             <div class="product-card__img-wrap">
                                 @if($product->image && Storage::disk('public')->exists($product->image))
-                                    <img src="{{ asset('storage/' . $product->image) }}" class="product-card__img"
+                                    <img src="/storage/{{ $product->image }}" class="product-card__img"
                                         alt="{{ $product->name }}">
                                 @else
                                     <div class="product-card__img-placeholder">

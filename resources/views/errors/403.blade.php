@@ -161,7 +161,7 @@
 <body>
     <div class="container">
         <div class="image-container">
-            <img src="{{ asset('images/403-access-denied.png') }}" alt="Acceso Denegado">
+            <img src="/images/403-access-denied.png" alt="Acceso Denegado">
         </div>
         <h2>¡Acceso Restringido!</h2>
         <p>Lo sentimos, no cuentas con los privilegios suficientes para entrar aquí. Por favor, vuelve al inicio o

@@ -714,7 +714,7 @@
                     <div class="col-md-5">
                         <div class="detail-img-wrap">
                             @if($product->image && Storage::disk('public')->exists($product->image))
-                                <img src="{{ asset('storage/' . $product->image) }}"
+                                <img src="/storage/{{ $product->image }}"
                                     alt="{{ $product->name }}"
                                     class="detail-img">
                             @else

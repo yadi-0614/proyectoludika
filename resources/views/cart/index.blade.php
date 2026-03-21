@@ -78,7 +78,7 @@
                                 {{-- Image --}}
                                 <div class="cart-item__img-wrap">
                                     @if($item['image'] && \Illuminate\Support\Facades\Storage::disk('public')->exists($item['image']))
-                                        <img src="{{ asset('storage/' . $item['image']) }}"
+                                        <img src="/storage/{{ $item['image'] }}"
                                              alt="{{ $item['name'] }}" class="cart-item__img">
                                     @else
                                         <div class="cart-item__img-placeholder">
@@ -687,7 +687,7 @@
         opacity: 0.7;
     }
     .btn-checkout:disabled:hover { transform: none; opacity: 0.7; }
-</style>
+
     @media (max-width: 600px) {
         .cart-item {
             grid-template-columns: 54px 1fr;

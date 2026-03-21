@@ -37,12 +37,23 @@
         }
 
         .app-navbar .container {
-            min-height: 62px;
+            min-height: 64px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            flex-wrap: nowrap;
+            flex-wrap: nowrap; /* Mantener todo en una linea si es posible */
             position: relative;
+            padding: 8px 15px;
+        }
+
+        @media (max-width: 600px) {
+            .app-navbar__brand {
+                font-size: 0.95rem;
+                gap: 6px;
+            }
+            .app-navbar__brand img {
+                height: 30px !important;
+            }
         }
 
         .app-navbar__brand {
@@ -217,37 +228,35 @@
         @media (max-width: 767.98px) {
             .app-navbar .container {
                 padding-top: 8px;
-                padding-bottom: 10px;
-                flex-wrap: wrap;
+                padding-bottom: 8px;
+                flex-wrap: nowrap !important;
             }
 
             .app-navbar .navbar-collapse {
-                position: absolute;
-                top: calc(100% + 10px);
-                right: 12px;
-                width: min(360px, calc(100vw - 24px));
-                margin-top: 0;
-                padding: 0;
-                border: 0;
-                background: transparent;
-                z-index: 1050;
+                background: linear-gradient(135deg, #0d1f18, #1E6F5C);
+                margin: 8px -15px -8px;
+                padding: 15px;
+                border-top: 1.5px solid rgba(255,255,255,0.1);
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             }
 
             .app-navbar .navbar-nav {
                 width: 100%;
-                align-items: stretch !important;
-                gap: 8px !important;
+                align-items: center !important;
+                gap: 12px !important;
             }
 
             .app-navbar .navbar-nav .nav-item {
                 width: 100%;
+                text-align: center;
             }
 
             .app-navbar .nav-link-ghost,
             .app-navbar .nav-link-register {
                 display: block;
                 width: 100%;
-                text-align: center;
+                margin: 0 !important;
+                padding: 10px !important;
             }
 
             .mobile-auth-links {
@@ -657,7 +666,7 @@
         <nav class="navbar navbar-expand-md app-navbar">
             <div class="container">
                 <a class="app-navbar__brand" href="{{ url('/') }}">
-                    <img src="{{ asset('images/logo-dice-v2.png') }}" alt="Lúdika"
+                    <img src="/images/logo-dice-v2.png" alt="Lúdika"
                         style="height:38px; width:auto; object-fit:contain; border-radius:8px;">
                     Lúdika
                 </a>
@@ -979,7 +988,7 @@
                     <div style="min-width:220px; flex:1 1 220px; max-width:280px;">
                         <a href="{{ url('/') }}"
                             style="display:inline-flex; align-items:center; gap:8px; text-decoration:none; margin-bottom:10px;">
-                            <img src="{{ asset('images/logo-dice-v2.png') }}" alt="Lúdika"
+                            <img src="/images/logo-dice-v2.png" alt="Lúdika"
                                 style="height:40px; width:auto; object-fit:contain; border-radius:8px; flex-shrink:0;">
                             <span
                                 style="font-size:1.15rem; font-weight:800; color:#fff; letter-spacing:0.3px;">Lúdika</span>

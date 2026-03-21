@@ -18,7 +18,7 @@
                 @foreach($products->take(4) as $index => $heroProd)
                     <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
                         @if($heroProd->image && Storage::disk('public')->exists($heroProd->image))
-                            <img src="{{ asset('storage/' . $heroProd->image) }}" class="d-block w-100 hero-carousel-img" alt="{{ $heroProd->name }}">
+                            <img src="/storage/{{ $heroProd->image }}" class="d-block w-100 hero-carousel-img" alt="{{ $heroProd->name }}">
                         @else
                             <div class="hero-carousel-img d-flex align-items-center justify-content-center" style="background: #1E6F5C;">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
@@ -136,7 +136,7 @@
                             {{-- Image --}}
                             <div class="product-card__img-wrap">
                                 @if($product->image && Storage::disk('public')->exists($product->image))
-                                    <img src="{{ asset('storage/' . $product->image) }}" class="product-card__img"
+                                    <img src="/storage/{{ $product->image }}" class="product-card__img"
                                         alt="{{ $product->name }}">
                                 @else
                                     <div class="product-card__img-placeholder">

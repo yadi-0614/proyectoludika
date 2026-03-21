@@ -155,7 +155,7 @@
                                 <td>
                                     <div class="d-flex align-items-center">
                                         @if($item->product && $item->product->image && Storage::disk('public')->exists($item->product->image))
-                                            <img src="{{ asset('storage/' . $item->product->image) }}" class="prod-img">
+                                            <img src="/storage/{{ $item->product->image }}" class="prod-img">
                                         @else
                                             <div class="prod-img d-flex align-items-center justify-content-center">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#69B578" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>

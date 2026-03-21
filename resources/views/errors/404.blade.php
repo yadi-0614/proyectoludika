@@ -161,7 +161,7 @@
 <body>
     <div class="container">
         <div class="image-container">
-            <img src="{{ asset('images/404-not-found.png') }}" alt="Página No Encontrada">
+            <img src="/images/404-not-found.png" alt="Página No Encontrada">
         </div>
         <h2>¡Ruta No Encontrada!</h2>
         <p>La página que buscas no existe o ha sido movida.</p>

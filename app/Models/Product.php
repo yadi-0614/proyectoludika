@@ -38,7 +38,8 @@ class Product extends Model
     public function getImageUrlAttribute(): ?string
     {
         if ($this->image) {
-            return asset("storage/" . $this->image);
+            // Usamos ruta relativa para que cargue en móviles (independiente de APP_URL)
+            return "/storage/" . $this->image;
         }
         return null;
     }
