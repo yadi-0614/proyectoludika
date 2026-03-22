@@ -1,6 +1,6 @@
-<x-layout>
+@extends('layouts.app')
 
-@section('css')
+@push('styles')
 <style>
     :root {
         --verde-selva: #1E6F5C;
@@ -117,7 +117,9 @@
     }
 
 </style>
-@endsection
+@endpush
+
+@section('content')
 
 <div class="container order-page">
 
@@ -195,4 +197,4 @@
     </div>
 </div>
 
-</x-layout>
+@endsection

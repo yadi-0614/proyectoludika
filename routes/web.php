@@ -60,6 +60,7 @@ Route::post("password/confirm", [ConfirmPasswordController::class, "confirm"]);
 
 Route::middleware(["auth", "security:auth"])->group(function () {
     Route::get("/home", [HomeController::class, "index"])->name("home");
+    Route::get("/categorias", [CategoryController::class, "publicIndex"])->name("categories.public");
 
     // Rutas del carrito (sesión)
     Route::get("cart", [CartController::class, "index"])->name("cart.index");

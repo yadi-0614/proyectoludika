@@ -11,23 +11,32 @@ class ReviewController extends Controller
 {
     public function store(Request $request, Product $product)
     {
-        $request->validate([
-            'rating' => 'required|integer|min:1|max:5',
-            'comment' => 'nullable|string|max:1000',
-        ], [
-            'rating.required' => 'Debes de seleccionar una calificación para poder poner tu comentario.',
-        ]);
+        $isReply = $request->has('parent_id');
+
+        $rules = [
+            'rating' => $isReply ? 'nullable|integer|min:1|max:5' : 'required|integer|min:1|max:5',
+            'comment' => 'required|string|max:1000',
+            'parent_id' => 'nullable|exists:reviews,id',
+        ];
+
+        $messages = [
+            'rating.required' => 'Debes seleccionar una calificación para tu comentario.',
+            'comment.required' => 'El comentario no puede estar vacío.',
+        ];
+
+        $request->validate($rules, $messages);
 
         $product->reviews()->create([
             'user_id' => Auth::id(),
-            'rating' => $request->rating,
+            'rating' => $isReply ? ($request->rating ?? 5) : $request->rating,
             'comment' => $request->comment,
+            'parent_id' => $request->parent_id,
         ]);
 
-        // Update product statistics
+        // Update product statistics (only for top-level reviews)
         $this->updateProductStats($product);
 
-        return redirect()->route('product.show', $product->id)->with('success', '¡Gracias por tu comentario!');
+        return redirect()->route('product.show', $product->id)->with('success', $isReply ? 'Respuesta enviada.' : '¡Gracias por tu comentario!');
     }
 
     public function destroy(Review $review)
@@ -45,9 +54,10 @@ class ReviewController extends Controller
 
     protected function updateProductStats(Product $product)
     {
-        $reviews = $product->reviews();
-        $count = $reviews->count();
-        $avg = $reviews->avg('rating');
+        // Solo promediar reseñas principales (sin parent_id)
+        $query = $product->reviews()->whereNull('parent_id');
+        $count = $query->count();
+        $avg = $query->avg('rating');
         
         $product->update([
             'rating' => $avg ?? 0,

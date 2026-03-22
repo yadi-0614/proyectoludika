@@ -35,6 +35,20 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+        $id = $request->input("id", null);
+        $loggedId = \Illuminate\Support\Facades\Auth::id();
+
+        // Si no es el administrador principal (ID 2)...
+        if ($id && $loggedId !== 2 && $loggedId != $id) {
+            $userToEdit = User::find($id);
+            // ...solo puede editar a clientes, no a otros administradores
+            if ($userToEdit && $userToEdit->hasRole('admin')) {
+                return redirect()
+                    ->route("users.index")
+                    ->with("error", "Solo el administrador principal puede editar a otros administradores.");
+            }
+        }
+
         try {
             Log::info("UserController: Store method called");
 
@@ -143,6 +157,18 @@ class UserController extends Controller
 
     public function edit(Request $request, User $user)
     {
+        $loggedId = \Illuminate\Support\Facades\Auth::id();
+
+        // Si no es el administrador principal (ID 2)...
+        if ($loggedId !== 2 && $loggedId !== $user->id) {
+            // ...solo puede editar a clientes, no a otros administradores
+            if ($user->hasRole('admin')) {
+                return redirect()
+                    ->route("users.index")
+                    ->with("error", "No tienes permisos para editar este perfil administrativo.");
+            }
+        }
+
         return view("users.form", [
             "user" => $user,
         ]);
@@ -150,6 +176,18 @@ class UserController extends Controller
 
     public function destroy(Request $request, User $user)
     {
+        $loggedId = \Illuminate\Support\Facades\Auth::id();
+
+        // El administrador principal (ID 2) puede eliminar a cualquiera
+        // Los otros administradores solo pueden eliminar a clientes
+        if ($loggedId !== 2) {
+            if ($user->hasRole('admin')) {
+                return redirect()
+                    ->route("users.index")
+                    ->with("error", "Solo el administrador principal puede eliminar a otros administradores.");
+            }
+        }
+
         // Prevenir que el usuario se elimine a sí mismo
         if (\Illuminate\Support\Facades\Auth::id() === $user->id) {
             return redirect()
@@ -188,6 +226,18 @@ class UserController extends Controller
      */
     public function toggleActive(User $user)
     {
+        $loggedId = \Illuminate\Support\Facades\Auth::id();
+
+        // El administrador principal (ID 2) puede cambiar estado a cualquiera
+        // Los otros administradores solo pueden cambiar estado a clientes
+        if ($loggedId !== 2) {
+            if ($user->hasRole('admin')) {
+                return redirect()
+                    ->route("users.index")
+                    ->with("error", "Solo el administrador principal puede cambiar el estado de otros administradores.");
+            }
+        }
+
         // Prevenir que el usuario se desactive a sí mismo
         if (\Illuminate\Support\Facades\Auth::id() === $user->id) {
             return redirect()
@@ -280,15 +330,17 @@ class UserController extends Controller
             // Action buttons
             $isCurrentUser = \Illuminate\Support\Facades\Auth::id() === $user->id;
             $isPrincipalAdmin = $user->id === 2;
+            $isLoggedPrincipal = \Illuminate\Support\Facades\Auth::id() === 2;
 
             $toggleLabel = $user->is_active ? 'Desactivar' : 'Activar';
             $toggleClass = $user->is_active ? 'btn-toggle-off' : 'btn-toggle-on';
             $toggleIcon = $user->is_active
                 ? '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
                 : '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+            $isAdminTarget = $user->hasRole('admin');
 
             if ($isCurrentUser) {
-                // Si es el usuario actual, le mostramos solo el botón de editar (perfil) o un texto inofensivo.
+                // Si es el usuario actual, le mostramos solo el botón de editar (perfil)
                 $actionsHtml = '<div class="action-btns" style="justify-content: flex-end; opacity: 0.6;">
                     <span style="font-size: 0.8rem; font-weight: 600; color: #888; padding: 7px;">(Tú)</span>
                     <button class="btn-edit" onclick="execute(\'/users/' . $user->id . '/edit\')">
@@ -296,8 +348,16 @@ class UserController extends Controller
                         <span class="d-none d-sm-inline">Editar</span>
                     </button>
                 </div>';
+            } elseif (!$isLoggedPrincipal && $isAdminTarget) {
+                // Si el logueado NO es el administrador principal y el objetivo es ADMIN, modo solo lectura.
+                $actionsHtml = '<div class="action-btns" style="justify-content: flex-end; opacity: 0.8;">
+                    <span style="font-size: 0.75rem; font-weight: 500; color: #999; padding: 7px; font-style: italic;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:2px"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        Admin (Protegido)
+                    </span>
+                </div>';
             } elseif ($isPrincipalAdmin) {
-                // Si es el administrador principal, no se puede eliminar ni desactivar, sólo editar.
+                // Si es el administrador principal, sólo se puede editar.
                 $actionsHtml = '<div class="action-btns" style="justify-content: flex-end; opacity: 0.6;">
                     <span style="font-size: 0.8rem; font-weight: 600; color: #888; padding: 7px;" title="Admin Principal"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
                     <button class="btn-edit" onclick="execute(\'/users/' . $user->id . '/edit\')">
@@ -314,10 +374,12 @@ class UserController extends Controller
                     </button>
                     <span style="font-size: 0.75rem; color: #888; font-weight: 500; font-style: italic; opacity: 0.8; padding: 7px;" title="No se puede eliminar ni desactivar porque tiene compras realizadas">
                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:2px"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-                        Con Compras
+                        Compras
                     </span>
                 </div>';
             } else {
+                // Es el administrador principal, tiene control total.
+                // O es un administrador secundario editando un cliente sin compras.
                 $actionsHtml = '<div class="action-btns">
                     <button class="btn-edit" onclick="execute(\'/users/' . $user->id . '/edit\')">
                         <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>

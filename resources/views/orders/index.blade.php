@@ -1,6 +1,6 @@
-<x-layout>
+@extends('layouts.app')
 
-@section('css')
+@push('styles')
 <style>
     :root {
         --verde-selva: #1E6F5C;
@@ -116,8 +116,9 @@
 
     .pagination-wrap { padding: 20px; }
 </style>
-@endsection
+@endpush
 
+@section('content')
 <div class="container orders-page">
 
     {{-- Hero --}}
@@ -191,4 +192,4 @@
     </div>
 </div>
 
-</x-layout>
+@endsection

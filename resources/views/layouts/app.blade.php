@@ -665,7 +665,7 @@
         {{-- ===== NAVBAR ===== --}}
         <nav class="navbar navbar-expand-md app-navbar">
             <div class="container">
-                <a class="app-navbar__brand" href="{{ url('/') }}">
+                <a class="app-navbar__brand" href="{{ Auth::check() ? route('home') : url('/') }}">
                     <img src="/images/logo-dice-v2.png" alt="Lúdika"
                         style="height:38px; width:auto; object-fit:contain; border-radius:8px;">
                     Lúdika
@@ -673,6 +673,9 @@
 
                 {{-- Navegación principal --}}
                 <div class="d-none d-md-flex align-items-center ms-3">
+                    <a href="{{ route('categories.public') }}" class="nav-link-ghost" style="font-weight: 600;">
+                        Categorías
+                    </a>
                     <a href="{{ route('acercade') }}" class="nav-link-ghost" style="font-weight: 600;">
                         Quiénes somos
                     </a>
@@ -685,6 +688,16 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    {{-- Categorías en móvil (solo visible en pantallas pequeñas) --}}
+                    <div class="d-md-none mt-3 mb-3">
+                        <a href="{{ route('categories.public') }}" class="mobile-auth-link text-white mb-2">
+                             Categorías
+                        </a>
+                        <a href="{{ route('acercade') }}" class="mobile-auth-link text-white">
+                            Quiénes somos
+                        </a>
+                    </div>
+
                     <ul class="navbar-nav ms-auto align-items-center gap-2">
                         @guest
                             @if (Route::has('login'))
@@ -830,13 +843,23 @@
                                     <hr class="mobile-auth-divider">
                                     <a class="mobile-auth-link" href="{{ route('profile.edit') }}">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24"
-                                            fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                                            <circle cx="12" cy="7" r="4" />
-                                        </svg>
-                                        Editar perfil
-                                    </a>
+                                             fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                                             stroke-linejoin="round">
+                                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                             <circle cx="12" cy="7" r="4" />
+                                         </svg>
+                                         Mi Perfil
+                                     </a>
+                                     @if(Auth::user()->role === 'admin')
+                                         <a class="mobile-auth-link" href="{{ route('home') }}">
+                                             <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                                             Panel Administrativo
+                                         </a>
+                                         <a class="mobile-auth-link" href="{{ route('productos.index') }}">
+                                             <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                                             Gestionar Productos
+                                         </a>
+                                     @endif
                                     <hr class="mobile-auth-divider">
                                     <a class="mobile-auth-link" href="{{ route('orders.index') }}">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24"
@@ -1033,6 +1056,15 @@
                                     TikTok: @_juegosludika
                                 </a>
                             </li>
+                            <li>
+                                <a href="https://www.youtube.com/@Lúdika-j3v" target="_blank"
+                                    style="display:flex; align-items:center; gap:9px; color:rgba(255,255,255,0.65); font-size:0.85rem; text-decoration:none; transition:color 0.2s;"
+                                    onmouseover="this.style.color='#69B578'"
+                                    onmouseout="this.style.color='rgba(255,255,255,0.65)'">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
+                                    YouTube: @Lúdika-j3v
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -1128,7 +1160,15 @@
                 },
                 body: JSON.stringify({ product_id: productId, qty: qty })
             })
-                .then(function (r) { return r.json(); })
+                .then(function (r) {
+                    if (r.status === 422) {
+                        return r.json().then(function (data) {
+                            alert(data.message);
+                            throw new Error(data.message);
+                        });
+                    }
+                    return r.json();
+                })
                 .then(function (data) {
                     _cartUpdateBadge(data.count);
                     /* bounce animation on cart button */
@@ -1147,7 +1187,10 @@
                         if (btn) { btn.disabled = false; btn.classList.remove('cart-added'); }
                     }, 1400);
                 })
-                .catch(function () { if (btn) btn.disabled = false; });
+                .catch(function (err) {
+                    if (btn) btn.disabled = false;
+                    console.error('Cart error:', err);
+                });
         }
 
         /* â”€â”€â”€ load cart dropdown panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */

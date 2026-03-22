@@ -17,28 +17,44 @@ class HomeController extends Controller
     {
         $user = $request->user();
         $search = $request->input('search', '');
+        $selected_category = $request->input('category', '');
 
-        $products = Product::when($search, function ($query) use ($search) {
+        $query = Product::query();
+
+        if ($search) {
             $query->where('name', 'like', $search . '%');
-        })
-            ->paginate(20)
-            ->withQueryString();
+        }
+
+        if ($selected_category) {
+            $query->where('category_id', $selected_category);
+        }
+
+        $products = $query->paginate(20)->withQueryString();
+        $categories = \App\Models\Category::withCount('products')->get();
 
         $view = $user && $user->hasRole('admin') ? 'home-admin' : 'home';
 
-        return view($view, compact('products', 'search'));
+        return view($view, compact('products', 'search', 'categories', 'selected_category'));
     }
 
     public function admin(Request $request)
     {
         $search = $request->input('search', '');
+        $selected_category = $request->input('category', '');
 
-        $products = Product::when($search, function ($query) use ($search) {
-            $query->where('name', 'like', $search . '%');
-        })
-            ->paginate(20)
-            ->withQueryString();
+        $productsQuery = Product::query();
+        if ($search) {
+            $productsQuery->where('name', 'like', $search . '%');
+        }
+        if ($selected_category) {
+            $productsQuery->where('category_id', $selected_category);
+        }
+        
+        $products = $productsQuery->paginate(20)->withQueryString();
+        
+        $users = \App\Models\User::all(); // Usado para conteos r\u00e1pidos o inicializaci\u00f3n
+        $categories = \App\Models\Category::withCount('products')->get();
 
-        return view('home-admin', compact('products', 'search'));
+        return view('home-admin', compact('products', 'search', 'selected_category', 'users', 'categories'));
     }
 }

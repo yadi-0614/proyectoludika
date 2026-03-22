@@ -2,6 +2,7 @@
 
 @section('content')
 
+    @if(!$selected_category && !$search)
     {{-- ===== HERO SECTION (FLYER) ===== --}}
     <section class="hero-section">
         <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
@@ -34,12 +35,10 @@
                                 @else
                                     <h1 class="hero-title">¡Hola, {{ Auth::user()->name }}!</h1>
                                     <p class="hero-subtitle">Explora nuestra colección de juegos exclusivos.</p>
-                                    <a href="{{ route('home') }}" class="hero-btn">Ir al menú</a>
                                 @endguest
                             @else
                                 <h1 class="hero-title">{{ $heroProd->name }}</h1>
                                 <p class="hero-subtitle">{{ Str::limit($heroProd->description, 100) }}</p>
-                                <a href="{{ route('product.show', $heroProd->id) }}" class="hero-btn">Ver detalles</a>
                             @endif
                         </div>
                     </div>
@@ -57,16 +56,19 @@
             </button>
         </div>
     </section>
+    @endif
 
     {{-- ===== PRODUCTS SECTION ===== --}}
     <div class="container products-container">
 
-        {{-- Section Header --}}
+        {{-- Section Header - Hidden when searching/filtering --}}
+        @if(!$selected_category && !$search)
         <div class="section-header">
             <h2 class="section-title">Nuestros Productos</h2>
             <div class="section-divider"></div>
             <p class="section-subtitle">Encuentra lo que buscas entre nuestra selección</p>
         </div>
+        @endif
 
         {{-- Search Bar --}}
         <div class="search-section">
@@ -80,19 +82,10 @@
                         </svg>
                     </span>
                     <input type="text" name="search" id="search" class="search-bar__input"
-                        placeholder="Buscar producto..." value="{{ $search }}" autocomplete="off">
+                        placeholder="Buscar producto por nombre..." value="{{ $search }}" autocomplete="off">
                     
-                    <select name="category" class="search-bar__select" onchange="this.form.submit()">
-                        <option value="">Todas las categorías</option>
-                        @foreach($categories as $category)
-                            <option value="{{ $category->id }}" {{ $selected_category == $category->id ? 'selected' : '' }}>
-                                {{ $category->name }}
-                            </option>
-                        @endforeach
-                    </select>
-
                     @if($search || $selected_category)
-                        <a href="{{ url('/') }}" class="search-bar__clear" title="Limpiar filtros">
+                        <a href="{{ url('/') }}" class="search-bar__clear" title="Limpiar búsqueda">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="18" y1="6" x2="6" y2="18" />
@@ -100,9 +93,7 @@
                             </svg>
                         </a>
                     @endif
-                    <button type="submit" class="search-bar__btn">
-                        Buscar
-                    </button>
+                    <button type="submit" class="search-bar__btn">Buscar</button>
                 </div>
                 @if($search)
                     <p class="search-hint">
@@ -112,19 +103,7 @@
                 @endif
             </form>
 
-            {{-- Category Pills --}}
-            <div class="category-pills">
-                <a href="{{ url('/') }}" class="category-pill {{ !$selected_category ? 'active' : '' }}">
-                    Todos
-                </a>
-                @foreach($categories as $cat)
-                    <a href="{{ url('/?category=' . $cat->id . ($search ? '&search=' . $search : '')) }}" 
-                       class="category-pill {{ $selected_category == $cat->id ? 'active' : '' }}">
-                        {{ $cat->name }}
-                        <span class="category-count">{{ $cat->products_count }}</span>
-                    </a>
-                @endforeach
-            </div>
+            {{-- Category Pills Removed --}}
         </div>
 
         {{-- Products Grid --}}

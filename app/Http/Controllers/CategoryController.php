@@ -14,6 +14,20 @@ class CategoryController extends Controller
         return view('categories.index', compact('categories'));
     }
 
+    public function publicIndex(Request $request)
+    {
+        $search = $request->input('search', '');
+        
+        $query = Category::with('products')->orderBy('name');
+        
+        if ($search) {
+            $query->where('name', 'like', '%' . $search . '%');
+        }
+        
+        $categories = $query->get();
+        return view('categories.public', compact('categories', 'search'));
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([

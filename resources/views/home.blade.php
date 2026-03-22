@@ -2,29 +2,68 @@
 
 @section('content')
 
-    {{-- ===== HERO SECTION ===== --}}
+    @if(!$selected_category && !$search)
+    {{-- ===== HERO SECTION (FLYER) ===== --}}
     <section class="hero-section">
-        <div class="hero-overlay"></div>
-        <div class="container hero-content">
-            <h1 class="hero-title">¡Hola, {{ Auth::user()->name }}!</h1>
-            <p class="hero-subtitle">Explora nuestra colección de productos exclusivos.</p>
-            <div style="margin-top: 1.5rem;">
-                <a href="#productos-grid" class="hero-btn">
-                    Ver productos
-                </a>
+        <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+            {{-- Indicators --}}
+            <div class="carousel-indicators">
+                @foreach($products->take(4) as $index => $heroProd)
+                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ $index }}" 
+                        class="{{ $index == 0 ? 'active' : '' }}" aria-current="{{ $index == 0 ? 'true' : 'false' }}" 
+                        aria-label="Slide {{ $index + 1 }}"></button>
+                @endforeach
             </div>
+
+            <div class="carousel-inner">
+                @foreach($products->take(4) as $index => $heroProd)
+                    <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+                        @if($heroProd->image && Storage::disk('public')->exists($heroProd->image))
+                            <img src="/storage/{{ $heroProd->image }}" class="d-block w-100 hero-carousel-img" alt="{{ $heroProd->name }}">
+                        @else
+                            <div class="hero-carousel-img d-flex align-items-center justify-content-center" style="background: #1E6F5C;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                            </div>
+                        @endif
+                        
+                        <div class="hero-overlay"></div>
+                        <div class="carousel-caption hero-content">
+                            @if($index == 0)
+                                <h1 class="hero-title">¡Hola, {{ Auth::user()->name }}!</h1>
+                                <p class="hero-subtitle">Explora nuestra colección de juegos exclusivos.</p>
+                            @else
+                                <h1 class="hero-title">{{ $heroProd->name }}</h1>
+                                <p class="hero-subtitle">{{ Str::limit($heroProd->description, 100) }}</p>
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            {{-- Controls --}}
+            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Siguiente</span>
+            </button>
         </div>
     </section>
+    @endif
 
     {{-- ===== PRODUCTS SECTION ===== --}}
     <div class="container products-container" id="productos-grid">
 
-        {{-- Section Header --}}
+        {{-- Section Header - Only visible on main home view --}}
+        @if(!$selected_category && !$search)
         <div class="section-header">
             <h2 class="section-title">Nuestros Productos</h2>
             <div class="section-divider"></div>
             <p class="section-subtitle">Encuentra lo que buscas entre nuestra selección</p>
         </div>
+        @endif
 
         {{-- Search Bar --}}
         <div class="search-section">
@@ -171,34 +210,36 @@
         /* HERO */
         .hero-section {
             position: relative;
-            background: linear-gradient(135deg, var(--negro-bosque) 0%, var(--verde-selva) 55%, var(--verde-hoja) 100%);
-            padding: 80px 0 70px;
+            background: #0d1f18;
+            padding: 0;
             text-align: center;
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            min-height: 450px;
+        }
+
+        .hero-carousel-img {
+            height: 450px;
+            object-fit: cover;
+            filter: brightness(0.7);
         }
 
         .hero-overlay {
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.2) 100%);
-            z-index: 0;
-        }
-
-        .hero-section::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            pointer-events: none;
-            z-index: 0;
+            background: linear-gradient(to bottom, rgba(13, 31, 24, 0.4), rgba(13, 31, 24, 0.7));
+            z-index: 1;
         }
 
         .hero-content {
-            position: relative;
-            z-index: 1;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            width: 100%;
+            padding: 0 20px;
+            margin-bottom: 0 !important;
+            bottom: auto !important;
         }
 
         .hero-title {
@@ -340,6 +381,53 @@
         .search-bar__btn:hover {
             opacity: 0.9;
             transform: scale(1.03);
+        }
+
+        .category-pills {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 1.2rem;
+        }
+
+        .category-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.5rem 1.1rem;
+            background: #fff;
+            color: var(--text-muted);
+            border: 1.5px solid #eee;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.25s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .category-pill:hover {
+            border-color: var(--verde-hoja);
+            color: var(--verde-selva);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30,111,92,0.12);
+        }
+
+        .category-pill.active {
+            background: var(--verde-selva);
+            color: #fff;
+            border-color: var(--verde-selva);
+            box-shadow: 0 4px 14px rgba(30,111,92,0.3);
+        }
+
+        .category-count {
+            font-size: 0.7rem;
+            background: rgba(0,0,0,0.06);
+            padding: 1px 6px;
+            border-radius: 10px;
+            color: inherit;
+            opacity: 0.8;
         }
 
         .search-hint {

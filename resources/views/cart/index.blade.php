@@ -727,6 +727,7 @@
         if (newQty < 1) newQty = 1;
         if (newQty > 99) newQty = 99;
         var qtyEl = document.getElementById('qty-' + productId);
+        var oldQty = qtyEl ? qtyEl.value : newQty;
 
         fetch('/cart/' + productId, {
             method: 'PATCH',
@@ -737,7 +738,21 @@
             },
             body: JSON.stringify({ qty: newQty })
         })
-        .then(r => r.json())
+        .then(r => {
+            if (r.status === 422) {
+                return r.json().then(data => {
+                    alert(data.message);
+                    // location.reload(); // Recargar para revertir y actualizar estados visuales de stock
+                    if (qtyEl) {
+                        // Intentamos revertir el valor del input para que no se vea la cantidad inválida
+                        // Pero mejor recargar si queremos estar 100% seguros de los subtotales etc.
+                        location.reload(); 
+                    }
+                    throw new Error(data.message);
+                });
+            }
+            return r.json();
+        })
         .then(data => {
             if (!data.success) return;
             if (qtyEl) qtyEl.value = data.qty;
@@ -745,6 +760,8 @@
             document.getElementById('summary-subtotal').textContent = formatMoney(data.total);
             document.getElementById('summary-total').textContent     = formatMoney(data.total);
             updateGlobalBadge(data.count);
+            // Si el producto tenía aviso de falta de stock y ahora es válido, recargamos
+            location.reload(); 
         })
         .catch(() => {});
     }

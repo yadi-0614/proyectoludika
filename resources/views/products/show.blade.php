@@ -427,6 +427,52 @@
         .star-rating label:hover ~ label {
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%23C9A227' stroke='%23C9A227' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'%3E%3C/polygon%3E%3C/svg%3E");
         }
+
+        /* ===== REPLIES ===== */
+        .replies-list {
+            margin-left: 40px;
+            margin-top: 15px;
+            border-left: 2px solid #eef6ef;
+            padding-left: 20px;
+        }
+        .reply-item {
+            padding: 12px 0;
+            border-bottom: 1px dotted #eef6ef;
+        }
+        .reply-item:last-child { border-bottom: none; }
+        .reply-user {
+            font-size: 0.85rem;
+            color: var(--verde-selva);
+            font-weight: 700;
+        }
+        .reply-text {
+            font-size: 0.88rem;
+            color: #666;
+            margin-top: 4px;
+        }
+        .btn-reply {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--verde-hoja);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 8px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .btn-reply:hover { color: var(--verde-selva); }
+        .reply-form-container {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f7faf7;
+            border-radius: 12px;
+            border: 1px solid #d6ead8;
+        }
+        .reply-form-container.open { display: block; }
+
         /* ===== TOAST ===== */
         #cart-toast {
             position: fixed;
@@ -894,7 +940,7 @@
 
                 <div class="reviews-list">
                     @forelse($product->reviews as $review)
-                        <div class="review-item">
+                        <div class="review-item" id="review-{{ $review->id }}">
                             <div class="review-header">
                                 <div class="review-user">
                                     @if($review->user->hasAvatar())
@@ -906,21 +952,23 @@
                                     @endif
                                     {{ $review->user->name }}
                                 </div>
-                                <span class="review-date">{{ $review->created_at->diffForHumans() }}</span>
-                                @if(Auth::check() && Auth::user()->hasRole('admin'))
-                                    <form id="delete-form-{{ $review->id }}" action="{{ route('reviews.destroy', $review->id) }}" method="POST" style="display:none;">
-                                        @csrf
-                                        @method('DELETE')
-                                    </form>
-                                    <button type="button" class="btn btn-link text-danger p-0 ms-2" title="Eliminar comentario" onclick="confirmDeleteReview({{ $review->id }})">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <polyline points="3 6 5 6 21 6"></polyline>
-                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                            <line x1="10" y1="11" x2="10" y2="17"></line>
-                                            <line x1="14" y1="11" x2="14" y2="17"></line>
-                                        </svg>
-                                    </button>
-                                @endif
+                                <div>
+                                    <span class="review-date">{{ $review->created_at->diffForHumans() }}</span>
+                                    @if(Auth::check() && Auth::user()->hasRole('admin'))
+                                        <form id="delete-form-{{ $review->id }}" action="{{ route('reviews.destroy', $review->id) }}" method="POST" style="display:none;">
+                                            @csrf
+                                            @method('DELETE')
+                                        </form>
+                                        <button type="button" class="btn btn-link text-danger p-0 ms-2" title="Eliminar comentario" onclick="confirmDeleteReview({{ $review->id }})">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="3 6 5 6 21 6"></polyline>
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                                            </svg>
+                                        </button>
+                                    @endif
+                                </div>
                             </div>
                             <div class="review-stars">
                                 @for($i = 1; $i <= 5; $i++)
@@ -932,6 +980,50 @@
                                 @endfor
                             </div>
                             <p class="review-text">{{ $review->comment }}</p>
+
+                            {{-- Botón Responder --}}
+                            @auth
+                                <a href="javascript:void(0)" class="btn-reply" onclick="toggleReplyBox({{ $review->id }})">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>
+                                    Responder
+                                </a>
+
+                                <div class="reply-form-container" id="reply-box-{{ $review->id }}">
+                                    <form action="{{ route('products.reviews.store', $product->id) }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="parent_id" value="{{ $review->id }}">
+                                        <textarea class="form-control mb-2" name="comment" rows="2" placeholder="Escribe tu respuesta..." style="border-radius:10px; font-size:0.85rem; border:1px solid #d6ead8;"></textarea>
+                                        <div class="d-flex justify-content-end gap-2">
+                                            <button type="button" class="btn btn-sm btn-light" onclick="toggleReplyBox({{ $review->id }})" style="border-radius:50px; font-size:0.75rem;">Cancelar</button>
+                                            <button type="submit" class="btn btn-sm btn-success" style="background:var(--verde-selva); border-radius:50px; font-size:0.75rem; border:none; padding:5px 15px;">Responder</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            @endauth
+
+                            {{-- Respuestas --}}
+                            @if($review->replies->count() > 0)
+                                <div class="replies-list">
+                                    @foreach($review->replies as $reply)
+                                        <div class="reply-item">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <div class="reply-user d-flex align-items-center gap-2">
+                                                    @if($reply->user->hasAvatar())
+                                                        <img src="{{ $reply->user->avatar_url }}" style="width:20px; height:20px; border-radius:50%; object-fit:cover;">
+                                                    @else
+                                                        <div style="width:20px; height:20px; border-radius:50%; background:var(--verde-hoja); color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.6rem;">
+                                                            {{ strtoupper(substr($reply->user->name, 0, 1)) }}
+                                                        </div>
+                                                    @endif
+                                                    {{ $reply->user->name }}
+                                                </div>
+                                                <span class="review-date" style="font-size:0.75rem;">{{ $reply->created_at->diffForHumans() }}</span>
+                                            </div>
+                                            <p class="reply-text">{{ $reply->comment }}</p>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
                         </div>
                     @empty
                         <div class="no-reviews">
@@ -1183,6 +1275,16 @@
                     document.getElementById('delete-form-' + reviewId).submit();
                 }
             })
+        };
+
+        window.toggleReplyBox = function(reviewId) {
+            const box = document.getElementById('reply-box-' + reviewId);
+            if(box) {
+                box.classList.toggle('open');
+                if(box.classList.contains('open')) {
+                    box.querySelector('textarea').focus();
+                }
+            }
         };
     </script>
 </body>
