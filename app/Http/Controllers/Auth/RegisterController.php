@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
@@ -42,6 +43,23 @@ class RegisterController extends Controller
     public function __construct()
     {
         $this->middleware('guest');
+    }
+
+    /**
+     * Show the application registration form.
+     * Override to store the previous URL in the session for redirection.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function showRegistrationForm()
+    {
+        if (!session()->has('url.intended')) {
+            $previous = url()->previous();
+            if ($previous && !Str::contains($previous, ['login', 'register', 'password'])) {
+                session(['url.intended' => $previous]);
+            }
+        }
+        return view('auth.register');
     }
 
     /**
@@ -116,7 +134,7 @@ class RegisterController extends Controller
 
             return $request->wantsJson()
                 ? new \Illuminate\Http\JsonResponse([], 201)
-                : redirect($this->redirectPath());
+                : redirect()->intended($this->redirectPath());
         }
         catch (QueryException $e) {
             // Capturar error de duplicación de email (código 23000)

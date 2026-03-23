@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Str;
 
 class LoginController extends Controller
 {
@@ -39,14 +40,34 @@ class LoginController extends Controller
     }
 
     /**
+     * Show the application's login form.
+     * Override to store the previous URL in the session for redirection.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function showLoginForm()
+    {
+        $previous = url()->previous();
+        \Illuminate\Support\Facades\Log::info("Login Form Requested. Previous URL: " . $previous);
+
+        if (!session()->has('url.intended')) {
+            if ($previous && !Str::contains($previous, ['login', 'register', 'password', 'logout'])) {
+                session(['url.intended' => $previous]);
+                \Illuminate\Support\Facades\Log::info("Setting url.intended to: " . $previous);
+            }
+        }
+        return view('auth.login');
+    }
+
+    /**
      * The user has been authenticated.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  mixed  $user
      * @return mixed
      */
     protected function authenticated(\Illuminate\Http\Request $request, $user)
     {
+        \Illuminate\Support\Facades\Log::info("User authenticated: " . $user->email);
+        \Illuminate\Support\Facades\Log::info("Session url.intended: " . session('url.intended'));
         // Cargar carrito de la DB a la sesión al iniciar sesión
         $dbItems = \App\Models\CartItem::where('user_id', $user->id)->get();
         $cart = session()->get('cart', []);
@@ -72,6 +93,9 @@ class LoginController extends Controller
                 'quantity' => $qty,
             ]);
         }
+
+        // REDIRECCIÓN EXPLÍCITA:
+        return redirect()->intended($this->redirectPath());
     }
 
     /**

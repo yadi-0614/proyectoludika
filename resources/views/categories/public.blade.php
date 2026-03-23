@@ -2,7 +2,13 @@
 
 @section('content')
 <div class="container py-5">
-    {{-- Section Header Removed to leave only search bar --}}
+    <div class="section-header mb-5 text-center">
+        <h1 class="section-title text-uppercase" style="font-weight: 800; letter-spacing: -0.02em; color: var(--verde-selva);">Nuestras Categorías</h1>
+        <div class="section-divider mx-auto" style="width: 60px; height: 4px; background: linear-gradient(90deg, var(--verde-selva), var(--verde-hoja)); border-radius: 10px; margin: 15px auto;"></div>
+        <p class="section-subtitle mx-auto" style="max-width: 600px; color: #6b7566; font-size: 1.05rem;">
+            Explora nuestra amplia variedad de juegos organizados por categorías para que encuentres exactamente la diversión que buscas.
+        </p>
+    </div>
 
     {{-- Category Search Bar --}}
     <div class="search-section mb-5" style="max-width: 500px; margin: 0 auto;">

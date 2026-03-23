@@ -692,6 +692,14 @@
 
             <div class="nav-actions">
                 @auth
+                    <a href="{{ asset('downloads/Loteria Mexicana.apk') }}" download="Loteria Mexicana.apk" class="nav-btn nav-btn-solid" style="background: linear-gradient(135deg, #69B578, #1E6F5C); border:none;" title="Descarga nuestra aplicación móvil">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+                            <line x1="12" y1="18" x2="12.01" y2="18" />
+                        </svg>
+                        Descarga nuestra app
+                    </a>
                     <a href="{{ route('cart.index') }}" class="nav-btn nav-btn-ghost" title="Ver mi carrito">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -1003,9 +1011,9 @@
 
                             {{-- Respuestas --}}
                             @if($review->replies->count() > 0)
-                                <div class="replies-list">
+                                <div class="replies-list" style="margin-left:50px;">
                                     @foreach($review->replies as $reply)
-                                        <div class="reply-item">
+                                        <div class="reply-item" id="review-{{ $reply->id }}">
                                             <div class="d-flex justify-content-between align-items-center mb-1">
                                                 <div class="reply-user d-flex align-items-center gap-2">
                                                     @if($reply->user->hasAvatar())
@@ -1017,7 +1025,23 @@
                                                     @endif
                                                     {{ $reply->user->name }}
                                                 </div>
-                                                <span class="review-date" style="font-size:0.75rem;">{{ $reply->created_at->diffForHumans() }}</span>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <span class="review-date" style="font-size:0.75rem;">{{ $reply->created_at->diffForHumans() }}</span>
+                                                    @if(Auth::check() && Auth::user()->hasRole('admin'))
+                                                        <form id="delete-form-{{ $reply->id }}" action="{{ route('reviews.destroy', $reply->id) }}" method="POST" style="display:none;">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                        </form>
+                                                        <button type="button" class="btn btn-link text-danger p-0" style="margin-top:-2px;" title="Eliminar respuesta" onclick="confirmDeleteReview({{ $reply->id }})">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                <polyline points="3 6 5 6 21 6"></polyline>
+                                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                                                            </svg>
+                                                        </button>
+                                                    @endif
+                                                </div>
                                             </div>
                                             <p class="reply-text">{{ $reply->comment }}</p>
                                         </div>

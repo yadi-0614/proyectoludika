@@ -203,8 +203,8 @@
                 <div class="col-lg-7">
                     <div class="video-promo-text ps-lg-4">
                         <h2>Descubre nuestra esencia</h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                        <p>En Lúdika, transformamos la riqueza cultural de Chiapas en experiencias inolvidables para toda la familia. No solo diseñamos juegos de mesa; creamos piezas artesanales que conectan generaciones a través del aprendizaje y la diversión.</p>
+                        <p>Nacimos de la pasión por nuestras raíces y el deseo de ofrecer una alternativa educativa diferente. Cada una de nuestras piezas es intervenida artesanalmente, rescatando elementos de la cultura Maya, la gastronomía de Ocosingo y la biodiversidad de nuestra selva.</p>
                     </div>
                 </div>
             </div>

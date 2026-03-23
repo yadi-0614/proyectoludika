@@ -132,6 +132,29 @@
             position: relative;
         }
 
+        .navbar-app-btn {
+            background: linear-gradient(135deg, #69B578, #1E6F5C);
+            border: none;
+            border-radius: 50px;
+            padding: 6px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #fff !important;
+            text-decoration: none;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px rgba(30, 111, 92, 0.25);
+        }
+
+        .navbar-app-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(30, 111, 92, 0.4);
+            color: #fff !important;
+        }
+
         .navbar-cart-btn:hover {
             background: rgba(30, 111, 92, 0.30);
             border-color: #69B578;
@@ -809,8 +832,21 @@
                                 </li>
                             @endif
                         @else
+                            {{-- Download App Button --}}
+                            <li class="nav-item d-none d-md-block">
+                                <a href="{{ asset('downloads/Loteria Mexicana.apk') }}" download="Loteria Mexicana.apk" class="navbar-app-btn" title="Descarga nuestra aplicación móvil">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+                                        <line x1="12" y1="18" x2="12.01" y2="18" />
+                                    </svg>
+                                    <span>Descarga nuestra app</span>
+                                </a>
+                            </li>
+
                             {{-- Cart Button --}}
-                            <li class="nav-item d-none d-md-block" style="position:relative;">
+                            <li class="nav-item d-none d-md-block" style="position:relative; margin-left: 10px;">
                                 <button id="cart-toggle" class="navbar-cart-btn" title="Mi carrito">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -928,6 +964,16 @@
 
                             <li class="nav-item d-md-none">
                                 <div class="mobile-auth-links">
+                                    <a class="mobile-auth-link" href="{{ asset('downloads/Loteria Mexicana.apk') }}" download="Loteria Mexicana.apk" style="background: rgba(105, 181, 120, 0.15);">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24"
+                                            fill="none" stroke="#69B578" stroke-width="2.5" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+                                            <line x1="12" y1="18" x2="12.01" y2="18" />
+                                        </svg>
+                                        <span style="color: #69B578;">Descarga nuestra app</span>
+                                    </a>
+                                    <hr class="mobile-auth-divider">
                                     <a class="mobile-auth-link" href="{{ route('cart.index') }}">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24"
                                             fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
@@ -1194,7 +1240,7 @@
     is always available when onclick handlers in child views fire --}}
     {{-- ======================================================= --}}
     <script>
-        /* â”€â”€â”€ helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+
         function _cartFormatMoney(v) {
             return 'MXN $' + parseFloat(v).toFixed(2);
         }
@@ -1226,7 +1272,6 @@
             }, 3000);
         }
 
-        /* â”€â”€â”€ GLOBAL addToCart â€” opens the qty modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
         window.addToCart = function (productId, btn, name, price) {
             var overlay = document.getElementById('qty-modal-overlay');
             var inp = document.getElementById('qty-input');
@@ -1246,7 +1291,7 @@
             inp.focus();
         };
 
-        /* â”€â”€â”€ actual POST to /cart/add â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        
         function _cartDoAdd(productId, qty, btn) {
             if (btn) btn.disabled = true;
             fetch('/cart/add', {
@@ -1291,7 +1336,7 @@
                 });
         }
 
-        /* â”€â”€â”€ load cart dropdown panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+       
         function _cartLoadPanel() {
             var body = document.getElementById('cart-panel-body');
             if (body) body.innerHTML = '<p style="text-align:center;color:#bbb;font-size:.88rem;padding:18px 0;">Cargando...</p>';
@@ -1338,7 +1383,7 @@
             if (total) total.textContent = _cartFormatMoney(data.total);
         }
 
-        /* â”€â”€â”€ Wire up everything once the DOM is ready â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        
         document.addEventListener('DOMContentLoaded', function () {
 
             @guest
@@ -1349,8 +1394,8 @@
             @endguest
 
             @auth
-                                                        /* redirect authenticated users away from auth pages */
-                                                        if (/\/(login|register)/.test(window.location.pathname)) {
+                /* redirect authenticated users away from auth pages */
+                if (/\/(login|register)/.test(window.location.pathname)) {
                     window.location.replace('/home');
                 }
 
