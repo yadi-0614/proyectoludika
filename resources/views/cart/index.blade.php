@@ -48,7 +48,7 @@
         @endif
 
         @if(count($items) > 0)
-
+            
             <div class="cart-layout">
 
                 {{-- ===== PRODUCTS TABLE ===== --}}
@@ -187,6 +187,29 @@
                                 <input type="radio" name="payment_provider" value="paypal" {{ old('payment_provider') === 'paypal' ? 'checked' : '' }}>
                                 <span>PayPal</span>
                             </label>
+
+                            {{-- Audio Instructions --}}
+                            <div class="audio-instructions-wrapper">
+                                <p class="audio-instructions-text">
+                                    ¿No sabes cómo pagar?
+                                    <span class="audio-controls">
+                                        <button type="button" class="audio-btn" id="play-audio-btn">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                                                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                                            </svg>
+                                            haz click aquí
+                                        </button>
+                                        <button type="button" class="audio-rewind" id="rewind-audio-btn" title="Retroceder 10 segundos">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M11 17l-5-5 5-5M18 17l-5-5 5-5"/>
+                                            </svg>
+                                            <span>-10s</span>
+                                        </button>
+                                    </span>
+                                </p>
+                                <audio id="payment-audio" src="{{ asset('audio/instruccion.mp3') }}"></audio>
+                            </div>
                             @error('payment_provider')
                                 <p class="payment-methods__error">{{ $message }}</p>
                             @enderror
@@ -603,6 +626,111 @@
     }
     .btn-checkout:hover { opacity: .88; transform: translateY(-1px); color: #fff; }
 
+    /* AUDIO INSTRUCTIONS */
+    .audio-instructions-wrapper {
+        margin-top: 14px;
+        padding: 12px 14px;
+        background: rgba(105, 181, 120, 0.08);
+        border: 1.5px solid rgba(105, 181, 120, 0.15);
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+    .audio-instructions-wrapper:hover {
+        background: rgba(105, 181, 120, 0.12);
+        border-color: rgba(105, 181, 120, 0.25);
+    }
+    .audio-instructions-text {
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--verde-selva);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+    .audio-btn {
+        background: transparent;
+        border: none;
+        color: var(--dorado);
+        font-weight: 700;
+        cursor: pointer;
+        padding: 2px 6px;
+        border-radius: 6px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.2s;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+    .audio-btn:hover {
+        background: rgba(201, 162, 39, 0.1);
+        color: #b08d1e;
+    }
+    .audio-btn.is-playing {
+        color: #e67e22;
+        text-decoration: none;
+    }
+    .audio-btn.is-playing svg {
+        animation: audioPulse 1.2s infinite;
+    }
+
+    .audio-controls {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-left: 4px;
+    }
+
+    .audio-rewind {
+        background: rgba(30, 111, 92, 0.08);
+        border: 1.2px solid rgba(30, 111, 92, 0.15);
+        color: var(--verde-selva);
+        font-size: 0.72rem;
+        font-weight: 800;
+        cursor: pointer;
+        padding: 3px 8px;
+        border-radius: 50px;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        transition: all 0.2s;
+    }
+    .audio-rewind:hover {
+        background: var(--verde-selva);
+        color: #fff;
+        transform: scale(1.05);
+    }
+    .audio-rewind:active { transform: scale(0.95); }
+
+    @keyframes audioPulse {
+        0% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.2); opacity: 0.7; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* TOP NAVIGATION */
+    .cart-nav-top {
+        margin-bottom: 20px;
+    }
+    .btn-back-simple {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--verde-selva);
+        font-size: 0.92rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        padding: 4px 0;
+    }
+    .btn-back-simple:hover {
+        color: var(--negro-bosque);
+        transform: translateX(-5px);
+    }
+
     .cart-summary__note {
         display: flex; align-items: center; justify-content: center;
         font-size: .78rem;
@@ -765,6 +893,60 @@
         })
         .catch(() => {});
     }
+
+    /* ---- AUDIO INSTRUCTIONS ---- */
+    document.addEventListener('DOMContentLoaded', function() {
+        const playBtn = document.getElementById('play-audio-btn');
+        const audio = document.getElementById('payment-audio');
+
+        if (playBtn && audio) {
+            playBtn.addEventListener('click', () => {
+                if (audio.paused) {
+                    audio.play().catch(e => {
+                        console.error("Audio playback failed:", e);
+                        alert("No se pudo reproducir el audio. Asegúrate de que el archivo exista.");
+                    });
+                    playBtn.classList.add('is-playing');
+                    playBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="6" y="4" width="4" height="16"></rect>
+                            <rect x="14" y="4" width="4" height="16"></rect>
+                        </svg>
+                        Pausar audio
+                    `;
+                } else {
+                    audio.pause();
+                    playBtn.classList.remove('is-playing');
+                    playBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                        </svg>
+                        haz click aquí
+                    `;
+                }
+            });
+
+            // Rewind logic
+            const rewindBtn = document.getElementById('rewind-audio-btn');
+            if (rewindBtn) {
+                rewindBtn.addEventListener('click', () => {
+                    audio.currentTime = Math.max(0, audio.currentTime - 10);
+                });
+            }
+
+            audio.addEventListener('ended', () => {
+                playBtn.classList.remove('is-playing');
+                playBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                    </svg>
+                    haz click aquí
+                `;
+            });
+        }
+    });
 
     /* Delta button click (+ / -) */
     function changeQtyDelta(productId, delta) {

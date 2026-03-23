@@ -56,6 +56,7 @@
             </button>
         </div>
     </section>
+
     @endif
 
     {{-- ===== PRODUCTS SECTION ===== --}}
@@ -832,6 +833,7 @@
                 font-size: 0.85rem;
             }
         }
+
     </style>
 @endpush
 

@@ -108,6 +108,56 @@
             .about-title { font-size: 2.2rem; }
             .about-grid { grid-template-columns: 1fr; }
         }
+
+        /* Improved Video Section Styles (2-column layout) */
+        .video-promo-wrapper {
+            background: #fff;
+            border-radius: 28px;
+            padding: 40px;
+            border: 1.5px solid #d6ead8;
+            box-shadow: 0 15px 45px rgba(30, 111, 92, 0.08);
+            margin-bottom: 60px;
+            transition: transform 0.3s ease;
+        }
+
+        .video-promo-wrapper:hover {
+            transform: translateY(-5px);
+        }
+
+        .video-element-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            aspect-ratio: 16 / 9;
+            background: #000;
+            border: 4px solid #f0f7f1;
+        }
+
+        .video-promo-player {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .video-promo-text h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1E6F5C;
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
+        }
+
+        .video-promo-text p {
+            color: #626262;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        @media (max-width: 992px) {
+            .video-promo-wrapper { padding: 30px; }
+            .video-promo-text h2 { font-size: 1.6rem; }
+        }
     </style>
 
     <section class="about-hero">
@@ -118,6 +168,48 @@
     </section>
 
     <div class="container">
+        {{-- Video 1: Presentación --}}
+        <div class="video-promo-wrapper">
+            <div class="row align-items-center">
+                <div class="col-lg-5 mb-4 mb-lg-0">
+                    <div class="video-element-container shadow-sm">
+                        <video controls preload="metadata" class="video-promo-player">
+                            <source src="{{ asset('videos/presentacion.mp4') }}" type="video/mp4">
+                            Tu navegador no soporta el elemento de video.
+                        </video>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="video-promo-text ps-lg-4">
+                        <h2>Conoce Lúdika en acción</h2>
+                        <p>Descubre cómo nuestras experiencias transforman cada momento en una aventura inolvidable. En este video de presentación, te mostramos lo que hace que nuestras dinámicas sean únicas y cómo logramos conectar a las personas a través del juego.</p>
+                        <p>Nuestro compromiso es llevar la diversión y el aprendizaje a un nuevo nivel, adaptándonos a cada grupo y entorno para crear recuerdos que duren toda la vida.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Video 2: Anuncio --}}
+        <div class="video-promo-wrapper">
+            <div class="row align-items-center">
+                <div class="col-lg-5 mb-4 mb-lg-0">
+                    <div class="video-element-container shadow-sm">
+                        <video controls preload="metadata" class="video-promo-player">
+                            <source src="{{ asset('videos/Anuncio.mp4') }}" type="video/mp4">
+                            Tu navegador no soporta el elemento de video.
+                        </video>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="video-promo-text ps-lg-4">
+                        <h2>Descubre nuestra esencia</h2>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="about-grid">
             {{-- Objetivo --}}
             <div class="about-card">
@@ -125,7 +217,7 @@
                 <div class="about-card__icon">
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
                 </div>
-                <h2>Objetivo</h2>
+                <h2>¿Cual es nuestro objetivo?</h2>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
             </div>
 
@@ -135,7 +227,7 @@
                 <div class="about-card__icon">
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                 </div>
-                <h2>Misión</h2>
+                <h2>¿Cual es nuestra misión?</h2>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
             </div>
 
@@ -145,7 +237,7 @@
                 <div class="about-card__icon">
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                 </div>
-                <h2>Visión</h2>
+                <h2>¿Cual es nuestra visión?</h2>
                 <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
             </div>
 
@@ -155,7 +247,7 @@
                 <div class="about-card__icon">
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                 </div>
-                <h2>Contexto</h2>
+                <h2>¿Cual es el contexto de nuestra empresa?</h2>
                 <p>Nuestra trayectoria se ha forjado a través de la pasión por los juegos de mesa, creando un espacio donde la comunidad y la diversión se encuentran.</p>
             </div>
         </div>

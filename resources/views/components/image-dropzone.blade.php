@@ -54,18 +54,27 @@
 {{-- <div class="" data-image-dropzone-component="{{ $componentId }}"> --}}
     <!-- Mostrar imagen actual si existe -->
     @if($showCurrentImage && $currentImage)
-        <div class="{{ $currentimageclass }} ">
-            <label class="form-label text-muted mb-2">
-                <i class="bi bi-image-fill text-primary me-2"></i>Imagen actual:
+        <div class="{{ $currentimageclass }} current-image-area" id="{{ $componentId }}_current_container">
+            <label class="form-label text-muted mb-2 d-flex align-items-center gap-2">
+                <i class="bi bi-image-fill text-primary"></i>
+                <span style="font-size: 0.85rem; font-weight: 600; color: #666;">Imagen actual:</span>
             </label>
-            <div class="card border-0 shadow-sm mx-auto" style="max-width: 200px;">
+            <div class="position-relative d-inline-block rounded overflow-hidden shadow-sm border" style="max-width: 200px;">
                 <img src="{{ $currentImage }}"
                      alt="{{ $currentImageAlt }}"
-                     class="img-fluid rounded shadow-sm"
-                     style="max-height: 200px; object-fit: cover;">
-                {{-- <div class="card-body p-3 text-center">
-                </div> --}}
+                     class="img-fluid"
+                     id="{{ $componentId }}_current_img"
+                     style="max-height: 180px; width: 100%; object-fit: cover; display: block;">
+                
+                <button type="button" 
+                        class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle d-flex align-items-center justify-content-center p-0"
+                        style="width: 24px; height: 24px; border: 2px solid #fff; z-index: 5;"
+                        onclick="window['imageDropzone_{{ $componentId }}'].removeCurrent()"
+                        title="Quitar imagen actual">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
             </div>
+            <input type="hidden" name="remove_{{ $name }}" id="remove_{{ $componentId }}" value="0">
         </div>
     @endif
 
@@ -304,9 +313,21 @@
                     $previewOverlay.removeClass('opacity-100').addClass('opacity-0');
                 }
 
+                // Función para remover imagen actual
+                function removeCurrent() {
+                    if (confirm('¿Estás seguro de que deseas eliminar la imagen actual?')) {
+                        console.log('Marking current image for removal: {{ $componentId }}');
+                        $('#{{ $componentId }}_current_container').fadeOut(300, function() {
+                            $(this).remove();
+                        });
+                        $('#remove_{{ $componentId }}').val('1');
+                    }
+                }
+
                 // Exponer funciones públicas para el componente
                 window['imageDropzone_{{ $componentId }}'] = {
                     removeImage: removeImage,
+                    removeCurrent: removeCurrent,
                     showPreview: showPreview,
                     getFile: function() {
                         return $imageInput[0].files[0] || null;

@@ -3,165 +3,147 @@
 @section('css')
 <style>
     :root {
+        --verde-profundo: #134E48;
         --verde-selva: #1E6F5C;
-        --verde-hoja: #69B578;
-        --dorado: #C9A227;
-        --negro-bosque: #2C2C2C;
-        --bg-page: #f2f5f0;
+        --verde-hoja: #34D399;
+        --dorado: #D97706;
+        --negro-bosque: #1A202C;
+        --slate-50: #F9FAFB;
+        --slate-100: #F3F4F6;
+        --slate-200: #E5E7EB;
     }
 
     body {
-        background: var(--bg-page);
-        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        background-color: var(--slate-50);
+        background-image: 
+            radial-gradient(at 0% 0%, rgba(52, 211, 153, 0.08) 0px, transparent 50%),
+            radial-gradient(at 100% 100%, rgba(30, 111, 92, 0.08) 0px, transparent 50%);
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
     }
 
     .form-page {
-        padding: 2rem 0 3rem;
+        padding: 2.5rem 0 5rem;
     }
 
     /* ── Hero header ── */
     .form-hero {
-        background: linear-gradient(135deg, var(--negro-bosque) 0%, var(--verde-selva) 100%);
-        border-radius: 20px;
-        padding: 24px 30px;
-        margin-bottom: 28px;
+        background: linear-gradient(135deg, var(--verde-profundo) 0%, var(--verde-selva) 100%);
+        border-radius: 24px;
+        padding: 40px;
+        margin-bottom: 35px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 16px;
-        box-shadow: 0 8px 30px rgba(30,111,92,0.25);
+        gap: 20px;
+        box-shadow: 0 20px 40px -10px rgba(19, 78, 72, 0.4);
         position: relative;
         overflow: hidden;
     }
 
-    .form-hero::before {
-        content: '';
-        position: absolute;
-        top: -30px; right: -30px;
-        width: 130px; height: 130px;
-        background: rgba(255,255,255,0.06);
-        border-radius: 50%;
-    }
-
     .form-hero-icon {
-        width: 48px; height: 48px;
-        background: rgba(255,255,255,0.15);
-        border: 2px solid rgba(255,255,255,0.3);
-        border-radius: 13px;
+        width: 60px; height: 60px;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 18px;
         display: flex; align-items: center; justify-content: center;
         flex-shrink: 0;
-        position: relative; z-index: 1;
+        backdrop-filter: blur(10px);
     }
 
     .form-hero h1 {
         color: #fff;
-        font-size: 1.5rem;
+        font-size: 2rem;
         font-weight: 800;
         margin: 0;
-        letter-spacing: -.02em;
-        position: relative; z-index: 1;
+        letter-spacing: -0.03em;
     }
 
     .form-hero p {
-        color: rgba(255,255,255,0.72);
-        font-size: 0.84rem;
-        margin: 2px 0 0;
-        position: relative; z-index: 1;
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 1rem;
+        margin: 4px 0 0;
     }
 
     /* ── Form card ── */
     .form-card {
         background: #fff;
-        border-radius: 20px;
-        box-shadow: 0 4px 24px rgba(30,111,92,0.10);
-        border: 1.5px solid #d6ead8;
+        border-radius: 24px;
+        box-shadow: 0 10px 15px -3px rgba(19, 78, 72, 0.05), 0 20px 25px -5px rgba(19, 78, 72, 0.08);
+        border: 1px solid var(--slate-200);
         overflow: hidden;
     }
 
     .form-card-body {
-        padding: 32px;
+        padding: 45px;
     }
 
-    /* ── Form labels & inputs ── */
     .lbl {
         display: block;
-        font-size: 0.78rem;
-        font-weight: 700;
-        color: var(--verde-selva);
+        font-size: 0.85rem;
+        font-weight: 800;
+        color: var(--verde-profundo);
         text-transform: uppercase;
-        letter-spacing: .05em;
-        margin-bottom: 6px;
+        letter-spacing: 0.06em;
+        margin-bottom: 10px;
     }
 
     .ctrl {
         width: 100%;
-        padding: 11px 14px;
-        border: 1.5px solid #b5d9bc;
-        border-radius: 12px;
-        font-size: 0.94rem;
-        background: #f7faf7;
+        padding: 14px 18px;
+        border: 2px solid var(--slate-100);
+        border-radius: 16px;
+        font-size: 1rem;
+        background: var(--slate-50);
         color: var(--negro-bosque);
         outline: none;
-        transition: border-color .2s, box-shadow .2s;
+        transition: all 0.25s ease;
         box-sizing: border-box;
     }
 
     .ctrl:focus {
         border-color: var(--verde-selva);
-        box-shadow: 0 0 0 3px rgba(30,111,92,0.10);
         background: #fff;
+        box-shadow: 0 0 0 5px rgba(30, 111, 92, 0.08);
     }
 
     .ctrl.is-invalid {
-        border-color: #c0392b !important;
-        box-shadow: 0 0 0 3px rgba(192,57,43,0.10);
+        border-color: #F87171 !important;
+        background-color: #FEF2F2;
     }
 
-    .error-msg {
-        color: #c0392b;
-        font-size: 0.78rem;
-        margin-top: 4px;
-        display: block;
-    }
-
-    /* ── Price input group ── */
     .price-group {
         display: flex;
-        border: 1.5px solid #b5d9bc;
-        border-radius: 12px;
+        border: 2px solid var(--slate-100);
+        border-radius: 16px;
         overflow: hidden;
-        background: #f7faf7;
-        transition: border-color .2s, box-shadow .2s;
+        background: var(--slate-50);
+        transition: all 0.25s ease;
     }
 
     .price-group:focus-within {
         border-color: var(--verde-selva);
-        box-shadow: 0 0 0 3px rgba(30,111,92,0.10);
         background: #fff;
-    }
-
-    .price-group.is-invalid {
-        border-color: #c0392b !important;
+        box-shadow: 0 0 0 5px rgba(30, 111, 92, 0.08);
     }
 
     .price-prefix {
-        background: #eef6ef;
+        background: var(--slate-100);
         color: var(--verde-selva);
-        font-weight: 700;
-        padding: 0 14px;
+        font-weight: 800;
+        padding: 0 20px;
         display: flex;
         align-items: center;
-        border-right: 1.5px solid #b5d9bc;
-        font-size: 1rem;
-        flex-shrink: 0;
+        border-right: 2px solid var(--slate-200);
+        font-size: 1.15rem;
     }
 
     .price-input {
         flex: 1;
         border: none !important;
         background: transparent !important;
-        padding: 11px 14px;
-        font-size: 0.94rem;
+        padding: 14px 18px;
+        font-size: 1rem;
+        font-weight: 600;
         color: var(--negro-bosque);
         outline: none;
     }
@@ -177,83 +159,66 @@
     .btn-save {
         display: inline-flex;
         align-items: center;
-        gap: 9px;
-        background: linear-gradient(135deg, var(--verde-selva), var(--negro-bosque));
+        gap: 12px;
+        background: linear-gradient(135deg, var(--verde-profundo) 0%, var(--verde-selva) 100%);
         color: #fff;
         border: none;
-        border-radius: 50px;
-        padding: 13px 32px;
-        font-size: 1rem;
+        border-radius: 16px;
+        padding: 16px 40px;
+        font-size: 1.1rem;
         font-weight: 700;
         cursor: pointer;
-        box-shadow: 0 4px 18px rgba(30,111,92,0.35);
-        transition: opacity .2s, transform .15s;
+        box-shadow: 0 10px 25px -5px rgba(19, 78, 72, 0.4);
+        transition: all 0.3s ease;
     }
 
-    .btn-save:hover { opacity: .88; transform: scale(1.02); }
-    .btn-save:disabled { opacity: .65; cursor: wait; transform: none; }
+    .btn-save:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 20px 30px -10px rgba(19, 78, 72, 0.5);
+    }
 
     .btn-cancel {
         display: inline-flex;
         align-items: center;
-        gap: 7px;
-        background: transparent;
-        color: var(--verde-selva);
-        border: 1.5px solid var(--verde-hoja);
-        border-radius: 50px;
-        padding: 12px 28px;
-        font-size: 1rem;
-        font-weight: 600;
-        cursor: pointer;
+        gap: 10px;
+        background: #fff;
+        color: var(--slate-500);
+        border: 2px solid var(--slate-200);
+        border-radius: 16px;
+        padding: 15px 35px;
+        font-size: 1.05rem;
+        font-weight: 700;
         text-decoration: none;
-        transition: all .2s;
+        transition: all 0.25s ease;
     }
 
     .btn-cancel:hover {
-        background: #eef6ef;
-        color: var(--verde-selva);
-        border-color: var(--verde-selva);
+        background: var(--slate-50);
+        border-color: var(--slate-400);
+        color: var(--negro-bosque);
     }
 
     .btn-back {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        background: rgba(255, 255, 255, 0.18);
-        border: 1.5px solid rgba(255, 255, 255, 0.4);
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
         color: #fff;
+        padding: 12px 24px;
+        border-radius: 14px;
         font-weight: 700;
-        font-size: 0.92rem;
-        padding: 10px 22px;
-        border-radius: 50px;
-        cursor: pointer;
-        text-decoration: none;
-        transition: background .2s, transform .15s;
-        position: relative;
-        z-index: 1;
-        backdrop-filter: blur(4px);
-        flex-shrink: 0;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
     }
 
     .btn-back:hover {
-        background: rgba(255, 255, 255, 0.28);
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateX(-5px);
         color: #fff;
-        transform: scale(1.04);
     }
 
-    /* ── Alert ── */
-    .alert-ludika {
-        background: linear-gradient(135deg, var(--verde-selva), var(--negro-bosque));
-        color: #fff;
+    .section-divider {
         border: none;
-        border-radius: 14px;
-        padding: 14px 20px;
-        margin-bottom: 20px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-weight: 600;
-        box-shadow: 0 4px 16px rgba(30,111,92,0.3);
+        border-top: 2px solid var(--slate-100);
+        margin: 45px 0;
     }
 </style>
 @stack('styles')
@@ -299,7 +264,7 @@
 
                     {{-- Nombre --}}
                     <div class="col-sm-12 col-md-7 col-lg-5">
-                        <label class="lbl">Nombre del producto</label>
+                        <label class="lbl">NOMBRE DEL PRODUCTO</label>
                         <input name="name" type="text"
                             class="ctrl {{ $errors->has('name') ? 'is-invalid' : '' }}"
                             value="{{ old('name', $product->name ?? '') }}"
@@ -316,7 +281,7 @@
 
                     {{-- Categoría --}}
                     <div class="col-sm-12 col-md-6 col-lg-4">
-                        <label class="lbl">Categoría</label>
+                        <label class="lbl">CATEGORIA</label>
                         <select name="category_id" id="category_id" 
                             class="ctrl {{ $errors->has('category_id') ? 'is-invalid' : '' }}"
                             onchange="checkCategory(this.value)">
@@ -348,7 +313,7 @@
 
                     {{-- Precio --}}
                     <div class="col-sm-6 col-md-5 col-lg-3">
-                        <label class="lbl">Precio</label>
+                        <label class="lbl">PRECIO</label>
                         <div class="price-group {{ $errors->has('price') ? 'is-invalid' : '' }}">
                             <span class="price-prefix">$</span>
                             <input name="price" type="number" min="1" step=".01" max="9999999"
@@ -364,7 +329,7 @@
 
                     {{-- Stock --}}
                     <div class="col-sm-6 col-md-5 col-lg-2">
-                        <label class="lbl">Stock</label>
+                        <label class="lbl">STOCK</label>
                         <input name="stock" type="number" min="0" step="1"
                             class="ctrl {{ $errors->has('stock') ? 'is-invalid' : '' }}"
                             value="{{ old('stock', $product->stock ?? 0) }}"
@@ -377,7 +342,7 @@
 
                     {{-- Descripción --}}
                     <div class="col-sm-12 col-md-12 col-lg-8">
-                        <label class="lbl">Descripción</label>
+                        <label class="lbl">DESCRIPCION</label>
                         <textarea name="description" rows="3"
                             class="ctrl {{ $errors->has('description') ? 'is-invalid' : '' }}"
                             style="resize:vertical;min-height:80px;"
@@ -390,7 +355,7 @@
 
                     {{-- Imagen dropzone --}}
                     <div class="col-12">
-                        <label class="lbl">Imagen del producto</label>
+                        <label class="lbl">IMAGEN DEL PRODUCTO</label>
                         <x-image-dropzone name="image"
                             :current-image="isset($product) && $product->hasImage() ? $product->image_url : null"
                             :current-image-alt="isset($product) ? $product->name : ''"

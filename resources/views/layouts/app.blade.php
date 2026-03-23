@@ -5,7 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>Lúdika's Store</title>
+    <link rel='icon' type='image/png' href='/images/logo-dice-v2.png?v=3.6'>
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
@@ -229,84 +230,162 @@
             .app-navbar .container {
                 padding-top: 8px;
                 padding-bottom: 8px;
-                flex-wrap: nowrap !important;
+                flex-wrap: wrap !important;
+                row-gap: 10px;
+            }
+
+            .app-navbar__brand {
+                flex: 1 1 auto;
+                min-width: 0;
+            }
+
+            .app-navbar .navbar-toggler {
+                flex: 0 0 auto;
             }
 
             .app-navbar .navbar-collapse {
-                background: linear-gradient(135deg, #0d1f18, #1E6F5C);
-                margin: 8px -15px -8px;
-                padding: 15px;
-                border-top: 1.5px solid rgba(255,255,255,0.1);
-                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                flex-basis: 100%;
+                width: 100%;
+                margin: 0;
+                margin-top: 6px;
+                padding: 14px;
+                border-radius: 20px;
+                overflow: hidden;
+                clear: both;
+            }
+
+            .app-navbar .navbar-collapse.show,
+            .app-navbar .navbar-collapse.collapsing {
+                display: block;
+            }
+
+            .app-navbar .navbar-collapse {
+                background:
+                    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02)),
+                    linear-gradient(135deg, #0e241c, #1d6a58);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                box-shadow: 0 12px 32px rgba(0, 0, 0, 0.24);
             }
 
             .app-navbar .navbar-nav {
                 width: 100%;
-                align-items: center !important;
-                gap: 12px !important;
+                align-items: stretch !important;
+                gap: 10px !important;
             }
 
             .app-navbar .navbar-nav .nav-item {
                 width: 100%;
-                text-align: center;
+                text-align: left;
             }
 
             .app-navbar .nav-link-ghost,
             .app-navbar .nav-link-register {
-                display: block;
+                display: flex;
+                align-items: center;
+                justify-content: center;
                 width: 100%;
                 margin: 0 !important;
-                padding: 10px !important;
+                min-height: 48px;
+                padding: 12px 16px !important;
+                text-align: center;
+                max-width: 100%;
+            }
+
+            .app-navbar .nav-link-ghost {
+                background: rgba(255, 255, 255, 0.06);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                color: #ffffff !important;
+            }
+
+            .app-navbar .nav-link-register {
+                background: linear-gradient(135deg, #2a8b73, #1d4b40);
+                box-shadow: none;
+            }
+
+            .mobile-menu-stack {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                margin-bottom: 10px;
+            }
+
+            .mobile-menu-card {
+                background: rgba(7, 25, 20, 0.22);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                border-radius: 16px;
+                padding: 10px;
+                backdrop-filter: blur(6px);
+            }
+
+            .mobile-menu-list {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
             }
 
             .mobile-auth-links {
-                background: #eef2f1;
-                border: 1px solid #d8e6df;
+                background: rgba(255, 255, 255, 0.08);
+                border: 1px solid rgba(255, 255, 255, 0.1);
                 border-radius: 16px;
                 overflow: hidden;
-                box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+                box-shadow: none;
             }
 
             .mobile-auth-link {
                 display: flex;
                 align-items: center;
-                gap: 10px;
+                justify-content: flex-start;
+                gap: 12px;
                 width: 100%;
-                padding: 14px 16px;
-                color: #0f6d60;
+                padding: 13px 14px;
+                color: #ffffff;
                 text-decoration: none;
-                font-size: 1.05rem;
-                font-weight: 500;
+                font-size: 0.98rem;
+                font-weight: 600;
+                border-radius: 14px;
+                line-height: 1.2;
             }
 
             .mobile-auth-link:hover {
-                background: #e2ece8;
-                color: #0b5f54;
+                background: rgba(255, 255, 255, 0.12);
+                color: #ffffff;
             }
 
             .mobile-auth-divider {
                 margin: 0;
                 border: 0;
-                border-top: 1px solid #cfded8;
+                border-top: 1px solid rgba(255, 255, 255, 0.08);
             }
 
             .mobile-auth-btn {
                 display: flex;
                 align-items: center;
-                gap: 10px;
+                gap: 12px;
                 width: 100%;
-                padding: 14px 16px;
-                color: #0f6d60;
+                padding: 13px 14px;
+                color: #ffffff;
                 background: transparent;
                 border: 0;
-                font-size: 1.05rem;
-                font-weight: 500;
+                font-size: 0.98rem;
+                font-weight: 600;
                 text-align: left;
+                border-radius: 14px;
             }
 
             .mobile-auth-btn:hover {
-                background: #e2ece8;
-                color: #0b5f54;
+                background: rgba(255, 255, 255, 0.12);
+                color: #ffffff;
+            }
+
+            .mobile-auth-guest {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                margin-bottom: 10px;
+            }
+
+            .mobile-auth-guest .nav-item {
+                width: 100%;
             }
         }
 
@@ -689,24 +768,43 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     {{-- Categorías en móvil (solo visible en pantallas pequeñas) --}}
-                    <div class="d-md-none mt-3 mb-3">
-                        <a href="{{ route('categories.public') }}" class="mobile-auth-link text-white mb-2">
-                             Categorías
-                        </a>
-                        <a href="{{ route('acercade') }}" class="mobile-auth-link text-white">
-                            Quiénes somos
-                        </a>
+                    <div class="d-md-none mobile-menu-stack">
+                        <div class="mobile-menu-card">
+                            <div class="mobile-menu-list">
+                                <a href="{{ route('categories.public') }}" class="mobile-auth-link">
+                                    Categorías
+                                </a>
+                                <a href="{{ route('acercade') }}" class="mobile-auth-link">
+                                    Quiénes somos
+                                </a>
+                            </div>
+                        </div>
+
+                        @guest
+                            <div class="mobile-menu-card mobile-auth-guest">
+                                @if (Route::has('login'))
+                                    <li class="nav-item list-unstyled">
+                                        <a class="nav-link-ghost" href="{{ route('login') }}">Iniciar sesión</a>
+                                    </li>
+                                @endif
+                                @if (Route::has('register'))
+                                    <li class="nav-item list-unstyled">
+                                        <a class="nav-link-register" href="{{ route('register') }}">Registrarse</a>
+                                    </li>
+                                @endif
+                            </div>
+                        @endguest
                     </div>
 
                     <ul class="navbar-nav ms-auto align-items-center gap-2">
                         @guest
                             @if (Route::has('login'))
-                                <li class="nav-item">
+                                <li class="nav-item d-none d-md-block">
                                     <a class="nav-link-ghost" href="{{ route('login') }}">Iniciar sesión</a>
                                 </li>
                             @endif
                             @if (Route::has('register'))
-                                <li class="nav-item">
+                                <li class="nav-item d-none d-md-block">
                                     <a class="nav-link-register" href="{{ route('register') }}">Registrarse</a>
                                 </li>
                             @endif

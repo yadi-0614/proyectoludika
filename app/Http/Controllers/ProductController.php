@@ -140,6 +140,14 @@ class ProductController extends Controller
                 $product = Product::findOrFail($id);
                 $oldImage = $product->image;
 
+                // Manejar eliminación de imagen actual si se solicita
+                if ($request->input('remove_image') === '1' && !$request->hasFile('image')) {
+                    if ($oldImage) {
+                        $this->fileService->delete($oldImage);
+                    }
+                    $product->image = null;
+                }
+
                 // Actualizar campos básicos
                 $product->fill($validated);
                 $product->save();

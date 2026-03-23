@@ -51,6 +51,7 @@
             </button>
         </div>
     </section>
+
     @endif
 
     {{-- ===== PRODUCTS SECTION ===== --}}
@@ -714,6 +715,7 @@
                 height: 150px;
             }
         }
+
     </style>
 @endpush
 
